@@ -20,7 +20,7 @@ class ExpedientController extends Controller
      */
     public function index()
     {
-      $expedients = Expedient::all();
+      $expedients = Expedient::paginate(7);
       return view('expedients.index')
         ->withExpedients($expedients);
     }

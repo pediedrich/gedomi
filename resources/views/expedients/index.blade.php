@@ -36,13 +36,14 @@
             </td>
           </tr>
         @endforeach
+
       </tbody>
     </table>
   </div>
   <!-- /.box-body -->
-  <div class="box-footer">
+  <!-- <div class="box-footer">
 
-  </div>
+  </div> -->
   <!-- /.box-footer-->
 </div>
 <!-- /.box -->
