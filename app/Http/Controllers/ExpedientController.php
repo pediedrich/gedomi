@@ -20,9 +20,14 @@ class ExpedientController extends Controller
      */
     public function index()
     {
-      $expedients = Expedient::paginate(7);
-      return view('expedients.index')
-        ->withExpedients($expedients);
+      // permisos
+      if(Auth::user()->can('expedient_list')){
+        $expedients = Expedient::paginate(7);
+        return view('expedients.index')
+                      ->withExpedients($expedients);
+      }else {
+        abort(404);
+      }
     }
 
     /**
@@ -32,6 +37,10 @@ class ExpedientController extends Controller
      */
     public function create()
     {
+
+      if (!Auth::user()->can('expedient_create')) {
+        abort(403, 'No tiene permisos para crear expedientes....');
+      }
 
         $years = Year::pluck('number','id');
         $types = Type::pluck('name','id');
