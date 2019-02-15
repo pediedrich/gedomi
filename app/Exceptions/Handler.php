@@ -48,6 +48,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        // pregunto si la exepcion es una instancia de autenticacion
+        // (si quiere ingresra  una ruta que necesita logueo)
+        if ($exception instanceof \Illuminate\Auth\AuthenticationException) {
+            return redirect('/')->with('flash','Por favor autentiquese para continuar!!!');
+        }
         return parent::render($request, $exception);
     }
 }

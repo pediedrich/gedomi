@@ -51,8 +51,11 @@
                 <!-- <div class="pull-left">
                   <a href="#" class="btn btn-default btn-flat">Profile</a>
                 </div> -->
-                <div class="pull-right">
-                  <a href="/logout" class="btn btn-default btn-flat">salir</a>
+                <div class="">
+                  <form action="{{ route('logout') }}" method="POST">
+                    {{ csrf_field() }}
+                    <button type="submit" class="btn btn-default btn-block" name="button">salir</button>
+                  </form>
                 </div>
               </li>
             </ul>
@@ -81,6 +84,7 @@
 
     <!-- Main content -->
     <section class="content">
+
       <!-- Default box -->
       @yield('content')
       <!-- /.box -->

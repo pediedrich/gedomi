@@ -1,35 +1,32 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container">
     <div class="row">
+
         <div class="col-md-8 col-md-offset-2">
+          @if (session()->has('flash'))
+            <div class="alert alert-danger center"><strong>{{ session('flash') }}</strong></div>
+          @endif
             <div class="panel panel-default">
-                <div class="panel-heading">Acceso al Sistema</div>
+                <div class="panel-heading">
+                  <!-- <div class="panel-title"> -->
+                    Acceso al Sistema
+                    <!-- <div> -->
+                </div>
                 <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="{{ route('login') }}">
+                    <form method="POST" action="{{ route('login') }}">
                         {{ csrf_field() }}
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">usuario</label>
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}"  autofocus>
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
+                        <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
+                            <label for="name" class="col-md-4 control-label">name</label>
+                              <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}"  autofocus>
+                              {!! $errors->first('name','<span class="help-block">:message</span>') !!}
                         </div>
                         <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
                             <label for="password" class="col-md-4 control-label">Clave</label>
-                            <div class="col-md-6">
                                 <input id="password" type="password" class="form-control" name="password" >
-                                @if ($errors->has('password'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
+                                {!! $errors->first('password','<span class="help-block">:message</span>') !!}
                         </div>
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">

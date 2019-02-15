@@ -92,7 +92,7 @@ class RolesSeeder extends Seeder {
         ];
 
 
-        $escribientePermissions = [
+        $proveyentePermissions = [
           /*
            * expedient's permissions
            */
@@ -138,7 +138,8 @@ class RolesSeeder extends Seeder {
 
         //create user admin (if not exist)
         $user = new User();
-        $user->name = 'Usuario administrador';
+        $user->name = 'admin';
+        $user->display_name = 'Usuario administrador';
         $user->email = 'admin@admin.com';
         $user->password = bcrypt('1234');
         $user->save();
@@ -160,7 +161,8 @@ class RolesSeeder extends Seeder {
 
         //create user ministro (if not exist)
         $userM = new User();
-        $userM->name = 'Marcelo Benitez';
+        $userM->name = 'ministro';
+        $userM->display_name = 'Usuario Ministro';
         $userM->email = 'ministro@ministro.com';
         $userM->password = bcrypt('1234');
         $userM->save();
@@ -182,7 +184,8 @@ class RolesSeeder extends Seeder {
 
         //create user ministro (if not exist)
         $userC = new User();
-        $userC->name = 'Usuario Coordinador';
+        $userC->name = 'coordinador';
+        $userC->display_name = 'Usuario Coordinador';
         $userC->email = 'coordinador@coordinador.com';
         $userC->password = bcrypt('1234');
         $userC->save();
@@ -190,14 +193,14 @@ class RolesSeeder extends Seeder {
         //attach role to the ministro user
         $userC->attachRole($roleC);
 
-        //create escribiente role
+        //create proveyente role
         $roleE = new Role();
-        $roleE->name = 'escribiente';
-        $roleE->display_name = 'Escribiente';
+        $roleE->name = 'proveyente';
+        $roleE->display_name = 'Proveyente';
         $roleE->save();
 
-        //attach permissions to the escribiente role
-        foreach ($escribientePermissions as $key => $value) {
+        //attach permissions to the proveyente role
+        foreach ($proveyentePermissions as $key => $value) {
             $permissionE = Permission::where('name', '=', $key)->first();
             $roleE->attachPermission($permissionE);
         }
@@ -205,8 +208,9 @@ class RolesSeeder extends Seeder {
 
         //create user ministro (if not exist)
         $userE = new User();
-        $userE->name = 'Usuario Escribiente';
-        $userE->email = 'escribiente@escribiente.com';
+        $userE->name = 'proveyente';
+        $userE->display_name = 'Usuario Proveyente';
+        $userE->email = 'proveyente@proveyente.com';
         $userE->password = bcrypt('1234');
         $userE->save();
 

@@ -3,16 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Laracasts\Flash\Flash;
 use Illuminate\Http\Response;
 use Carbon\Carbon;
 use App\Expedient;
 use App\File;
 use App\Year;
 use App\Type;
+use App\Pass;
 use Auth;
 
 class ExpedientController extends Controller
 {
+
+    public function __construct()
+    {
+      $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -21,13 +30,14 @@ class ExpedientController extends Controller
     public function index()
     {
       // permisos
-      if(Auth::user()->can('expedient_list')){
-        $expedients = Expedient::paginate(7);
-        return view('expedients.index')
-                      ->withExpedients($expedients);
-      }else {
-        abort(404);
-      }
+
+        if( Auth::user()->can('expedient_list')){
+          $expedients = Expedient::paginate(7);
+          return view('expedients.index')
+                        ->withExpedients($expedients);
+        }else {
+          abort(403);
+        }
     }
 
     /**
@@ -60,21 +70,51 @@ class ExpedientController extends Controller
     public function store(Request $request)
     {
 
-      // falta los roles
-      // falta las validaciones
+      // control sobre la funcion
+      if (!Auth::user()->can('expedient_create') ){
+        abort(403);
+      }
+      // validaciones
+      request()->validate([
+          'number' => ['numeric','required'],
+          'title' => ['required','string','min:10'],
+      ]);
 
+      // si pasa la validacion creo el expte
+      try {
 
-        $expedient = Expedient::create([
-          'number' => $request->input('number'),
-          'title' => $request->input('title'),
-          'year_id' => $request->input('year_id'),
-          'type_id' => $request->input('type_id'),
-          'user_create_id' => Auth::user()->id,
-          'user_owner_id' => $request->user_id
-        ]);
+        DB::beginTransaction();
 
-        return redirect()->route('expedients.index');
+          $expedient = Expedient::create([
+            'number' => $request->input('number'),
+            'title' => $request->input('title'),
+            'year_id' => $request->input('year_id'),
+            'type_id' => $request->input('type_id'),
+            'user_create_id' => Auth::user()->id,
+            'user_owner_id' => $request->user_id
+          ]);
 
+          Pass::create([
+            'expedient_id' => $expedient->id,
+            'user_receiver_id' => $request->user_id,
+            'user_sender_id' => Auth::user()->id,
+            'observation' => $request->input('observation'),
+          ]);
+
+        DB::commit();
+
+        flash::success('Expediente creado Correctamente.-');
+        return redirect('expedients');
+
+      } catch (\Exception $e) {
+
+        DB::rollback();
+
+        flash::error('Fallo la creación del expte.-');
+        return redirect('expedients');
+
+      }
+      
     }
 
     /**

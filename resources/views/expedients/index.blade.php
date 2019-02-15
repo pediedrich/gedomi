@@ -3,6 +3,7 @@
 @section('content')
 <!-- Default box -->
 <div class="box">
+  @include('flash::message')
   <div class="box-header with-border">
     <h3 class="box-title">Listado Expedientes</h3>
     <div class="box-tools pull-right">
@@ -10,6 +11,12 @@
     </div>
   </div>
   <div class="box-body">
+    @if (Session::has('flash_notification.message'))
+            <div class="alert alert-{{ Session::get('flash_notification.level') }}">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                {{ Session::get('flash_notification.message') }}
+            </div>
+    @endif
     <table class="table">
       <thead class="thead-light">
         <tr>
@@ -39,6 +46,7 @@
 
       </tbody>
     </table>
+    {{ $expedients->links() }}
   </div>
   <!-- /.box-body -->
   <!-- <div class="box-footer">

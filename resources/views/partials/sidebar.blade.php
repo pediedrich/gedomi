@@ -17,6 +17,7 @@
     <ul class="sidebar-menu" data-widget="tree">
       <li class="header">MAIN NAVIGATION</li>
       <li {{ (Request::is('*expedients*') ? 'class=active' : '') }}><a href="{{ route('expedients.index') }}">Expedientes</a></li>
+      <li {{ (Request::is('*users*') ? 'class=active' : '') }}><a href="{{ route('users.index') }}">Usuarios</a></li>
       <!-- <li {{ (Request::is('*user*') ? 'class=active' : '') }}><a href="#">Usuarios</a></li> -->
     </ul>
   </section>
