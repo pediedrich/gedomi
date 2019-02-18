@@ -13,14 +13,20 @@
     <table class="table">
       <thead class="thead-light">
         <tr>
+          <th scope="col" class="col-md-1"></th>
           <th scope="col">Documento</th>
+          <th scope="col">Tipo Documento</th>
         </tr>
       </thead>
       <tbody>
         @foreach ($expedient->files as $file)
 
           <tr>
+            <td class="img img-responsive">
+                <img src="{{ asset('img/'.$file->extension.'.png') }}" height="25" width="25" alt="">
+            </td>
             <td>{{$file->title}}</td>
+            <td>{{  $file->typeFile->name }}</td>
             <td>
                 <!--actions-->
                 <div class="btn-group pull-right">
@@ -61,15 +67,23 @@
         {{ csrf_field() }}
 
         <div class="form-group{{ $errors->has('file') ? ' has-error' : '' }}">
-          <div class="col-md-6">
+          <div class="col-md-4">
             {{ Form::label('file', 'Archivo') }}
             {{ Form::file('file', null, ['class' => 'form-control']) }}
             {!! $errors->first('file', '<p class="help-block">:message</p>')  !!}
           </div>
         </div>
 
+        <div class="form-group{{ $errors->has('typeFile_id') ? ' has-error' : '' }}">
+          <div class="col-md-4">
+            {{ Form::label('typeFile_id', 'Tipo Documento') }}
+            {{ Form::select('typeFile_id', $typeFiles,null, ['class' => 'form-control']) }}
+            {!! $errors->first('typeFile_id', '<p class="help-block">:message</p>')  !!}
+          </div>
+        </div>
+
         <div class="form-group{{ $errors->has('title_file') ? ' has-error' : '' }}">
-          <div class="col-md-6">
+          <div class="col-md-4">
             {{ Form::label('title_file', 'Titulo') }}
             {{ Form::text('title_file', null, ['class' => 'form-control']) }}
             {!! $errors->first('title_file', '<p class="help-block">:message</p>')  !!}

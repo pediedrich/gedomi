@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use Carbon\Carbon;
 use App\Expedient;
 use App\File;
+use App\TypeFile;
 use App\Role;
 use App\User;
 use App\Year;
@@ -152,8 +153,10 @@ class ExpedientController extends Controller
         abort(403);
       }
       $expedient = Expedient::find($id);
+      $typeFiles = TypeFile::pluck('name','id');
       return view('expedients.show')
-        ->withExpedient($expedient);
+        ->withExpedient($expedient)
+        ->withtypeFiles($typeFiles);
 
     }
 
@@ -233,7 +236,7 @@ class ExpedientController extends Controller
 
       request()->validate([
         'title_file' => 'required|string',
-        'file' => 'required|mimes:pdf,doc,docx',
+        'file' => 'required|mimes:pdf,doc,docx,odt',
       ]);
 
 
@@ -262,7 +265,9 @@ class ExpedientController extends Controller
         $file->title = $request->title_file;
         $file->name = $files_name;
         $file->url = $destination;
+        $file->extension= $extension;
         $file->expedient_id = $id;
+        $file->type_id = $request->typeFile_id;
         $file->user_id = Auth::user()->id;
 
         //dd($file);
