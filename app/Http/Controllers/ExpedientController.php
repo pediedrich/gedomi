@@ -99,7 +99,7 @@ class ExpedientController extends Controller
       // validaciones
       request()->validate([
         'title' => 'required|string|min:10',
-        'number' => 'required|unique:expedients|numeric',
+        'number' => 'required|numeric',
       ]);
 
       // si pasa la validacion creo el expte
