@@ -19,12 +19,12 @@
                     <form method="POST" action="{{ route('login') }}">
                         {{ csrf_field() }}
                         <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                            <label for="name" class="col-md-4 control-label">name</label>
+                            <label for="name" class="col-md-4 control-label">Nombre de Usuario</label>
                               <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}"  autofocus>
                               {!! $errors->first('name','<span class="help-block">:message</span>') !!}
                         </div>
                         <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="col-md-4 control-label">Clave</label>
+                            <label for="password" class="col-md-4 control-label">Contraseña</label>
                                 <input id="password" type="password" class="form-control" name="password" >
                                 {!! $errors->first('password','<span class="help-block">:message</span>') !!}
                         </div>

@@ -26,7 +26,7 @@ class UserController extends Controller
     {
 
         if ( Auth::user()->can('user_create')) {
-            $users = User::paginate(7);
+            $users = User::whereNotIn('id',[1])->get();
             return view('users.index',compact('users'));
         } else {
           abort(403);

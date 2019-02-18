@@ -8,7 +8,7 @@
       </div>
       <div class="pull-left info">
         @if(Auth::user()->name)
-          <p>{{Auth::user()->name}}</p>
+          <p>{{Auth::user()->display_name}}</p>
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         @endif
       </div>
@@ -16,9 +16,12 @@
     <!-- sidebar menu: : style can be found in sidebar.less -->
     <ul class="sidebar-menu" data-widget="tree">
       <li class="header">MAIN NAVIGATION</li>
+      @permission('expedient_list')
       <li {{ (Request::is('*expedients*') ? 'class=active' : '') }}><a href="{{ route('expedients.index') }}">Expedientes</a></li>
+      @endpermission
+      @permission('user_list')
       <li {{ (Request::is('*users*') ? 'class=active' : '') }}><a href="{{ route('users.index') }}">Usuarios</a></li>
-      <!-- <li {{ (Request::is('*user*') ? 'class=active' : '') }}><a href="#">Usuarios</a></li> -->
+      @endpermission
     </ul>
   </section>
   <!-- /.sidebar -->

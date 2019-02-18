@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Response;
 use Carbon\Carbon;
 use App\Expedient;
 use App\File;
+use App\User;
 use App\Year;
 use App\Type;
 use App\Pass;
@@ -32,11 +34,21 @@ class ExpedientController extends Controller
       // permisos
 
         if( Auth::user()->can('expedient_list')){
-          $expedients = Expedient::paginate(7);
+
+          // si es proveyente traigo los exptedientes que le fueron asignados
+          if (Auth::user()->hasRole('proveyente')) {
+            $expedients = Expedient::whereUserOwnerId(Auth::user()->id)->get();
+          }else {
+            // si no, muestro todos
+            $expedients = Expedient::get();
+          }
+
           return view('expedients.index')
                         ->withExpedients($expedients);
         }else {
-          abort(403);
+          Flash::warning('no tiene permisos');
+          return redirect()->back();
+          //abort(403, 'No tiene permisos para Listar Expedientes.-');
         }
     }
 
@@ -49,16 +61,20 @@ class ExpedientController extends Controller
     {
 
       if (!Auth::user()->can('expedient_create')) {
-        abort(403, 'No tiene permisos para crear expedientes....');
+        //si no tiene permiso para creaer expedientes
+        Flash::error('<strong> Permiso Denegado.-</strong>');
+        return redirect()->back();
       }
 
-        $years = Year::pluck('number','id');
-        $types = Type::pluck('name','id');
-        $selected = Carbon::now()->format('Y');
-        return view('expedients.create')
-                        ->withYears($years)
-                        ->withTypes($types)
-                        ->withSelected($selected);
+      $usersOwner = User::whereNotIn('id',[1])->pluck('display_name','id');
+      $years = Year::pluck('number','id');
+      $types = Type::pluck('name','id');
+      $selected = Carbon::now()->format('Y');
+      return view('expedients.create')
+                      ->withYears($years)
+                      ->withTypes($types)
+                      ->withUserOwner($usersOwner)
+                      ->withSelected($selected);
     }
 
     /**
@@ -76,8 +92,8 @@ class ExpedientController extends Controller
       }
       // validaciones
       request()->validate([
-          'number' => ['numeric','required'],
-          'title' => ['required','string','min:10'],
+        'title' => 'required|string|min:10',
+        'number' => 'required|unique:expedients|numeric',
       ]);
 
       // si pasa la validacion creo el expte
@@ -91,12 +107,12 @@ class ExpedientController extends Controller
             'year_id' => $request->input('year_id'),
             'type_id' => $request->input('type_id'),
             'user_create_id' => Auth::user()->id,
-            'user_owner_id' => $request->user_id
+            'user_owner_id' => $request->user_owner_id
           ]);
 
           Pass::create([
             'expedient_id' => $expedient->id,
-            'user_receiver_id' => $request->user_id,
+            'user_receiver_id' => $request->user_owner_id,
             'user_sender_id' => Auth::user()->id,
             'observation' => $request->input('observation'),
           ]);
@@ -114,7 +130,7 @@ class ExpedientController extends Controller
         return redirect('expedients');
 
       }
-      
+
     }
 
     /**
@@ -125,9 +141,13 @@ class ExpedientController extends Controller
      */
     public function show($id)
     {
-        $expedient = Expedient::find($id);
-        return view('expedients.show')
-          ->withExpedient($expedient);
+      // control sobre la funcion
+      if (!Auth::user()->can('expedient_show') ){
+        abort(403);
+      }
+      $expedient = Expedient::find($id);
+      return view('expedients.show')
+        ->withExpedient($expedient);
 
     }
 
@@ -139,11 +159,15 @@ class ExpedientController extends Controller
      */
     public function edit($id)
     {
-        $years = Year::pluck('number','id');
-        $expedient = Expedient::find($id);
-        return view('expedients.edit')
-          ->withExpedient($expedient)
-          ->withYears($years);
+      // control sobre la funcion
+      if (!Auth::user()->can('expedient_edit') ){
+        abort(403);
+      }
+      $years = Year::pluck('number','id');
+      $expedient = Expedient::find($id);
+      return view('expedients.edit')
+        ->withExpedient($expedient)
+        ->withYears($years);
     }
 
     /**
@@ -155,7 +179,10 @@ class ExpedientController extends Controller
      */
     public function update(Request $request, $id)
     {
-
+      // control sobre la funcion
+      if (!Auth::user()->can('expedient_edit') ){
+        abort(403);
+      }
       $expedient = Expedient::find($id);
       $expedient->title = $request->input('title');
       $expedient->number = $request->input('number');
@@ -174,18 +201,53 @@ class ExpedientController extends Controller
      */
     public function destroy($id)
     {
-        return $id;
+      // control sobre la funcion
+      if (!Auth::user()->can('expedient_destroy') ){
+        abort(403);
+      }
+
+      return $id;
+    }
+
+    public function receive($id)
+    {
+
+      $expedient = Expedient::find($id);
+      $pass = $expedient->passes()->whereReceivedAt(null)->first();
+      $pass->received_at = date('Y-m-d H:i:s');
+      // $pass->receiver_at = \Carbon::now();
+      $pass->save();
+      //dd( $pass->receiver_at);
+
+      return redirect()->back();
+
     }
 
     public function addFile(Request $request,$id){
 
+      request()->validate([
+        'title_file' => 'required|string',
+        'file' => 'required|mimes:pdf,doc,docx',
+      ]);
+
+
       //obtenemos el campo file definido en el formulario
        $file = $request->file('file');
 
-       //obtenemos el nombre del archivo
+       //obtengo los datos del archivo
+
+       //nombre
        $nombre = $file->getClientOriginalName();
+       //extension
        $extension = $file->getClientOriginalExtension();
+
        $destination = public_path().'/files/'.$id.'/';
+
+       //existe el destino?
+       if (!file_exists($destination)) {
+          mkdir($destination, 0777, true);
+        }
+
        $files_name = $nombre;
        $file->move($destination,$files_name);
 
@@ -196,6 +258,8 @@ class ExpedientController extends Controller
         $file->url = $destination;
         $file->expedient_id = $id;
         $file->user_id = Auth::user()->id;
+
+        //dd($file);
         $file->save();
 
         return redirect()->back();
@@ -214,5 +278,28 @@ class ExpedientController extends Controller
               );
 
       return response()->download($file, $name, $headers);
+    }
+
+    public function destroyFile($expedient_id,$file_id) {
+
+      $file = File::find($file_id);
+      $file_path = public_path(). '/files/'.$expedient_id.'/'.$file->name;
+
+      if ($file->exists($file_path)) {
+
+          // elimino datos de la DB
+          $file->destroy($file_id);
+          //elimino el archivo fisico
+          unlink($file_path);
+
+          Flash::success('<strong> Archivo eliminado correctamente.-</strong>');
+          return redirect()->back();
+
+      }else {
+        Flash::warning('<strong> Archivo Inexistente.-</strong>');
+        return redirect()->back();
+      }
+      //$file->delete();
+      //return redirect('admin/dashboard')->with('message','خبر موفقانه حذف  شد');
     }
 }

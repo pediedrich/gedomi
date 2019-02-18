@@ -35,11 +35,11 @@
           </div>
       </div>
       <div class="row">
-          <div class="form-group{{ $errors->has('role_id') ? ' has-error' : '' }}">
+          <div class="form-group{{ $errors->has('rol_id') ? ' has-error' : '' }}">
               <div class="col-md-5">
-                  {!! Form::label('role_id', 'Rol') !!}
-                  {!! Form::select('role_id', $roles , null,array('class'=>'form-control selectpicker' , 'data-live-search'=>'true')) !!}
-                  {!! $errors->first('role_id', '<p class="help-block">:message</p>') !!}
+                  {!! Form::label('rol_id', 'Rol') !!}
+                  {!! Form::select('rol_id', $roles , null,array('class'=>'form-control selectpicker' , 'data-live-search'=>'true')) !!}
+                  {!! $errors->first('rol_id', '<p class="help-block">:message</p>') !!}
               </div>
           </div>
       </div>

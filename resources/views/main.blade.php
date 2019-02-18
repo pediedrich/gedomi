@@ -31,7 +31,8 @@
               <img src="/adminlte/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
               <span class="hidden-xs">
                 @if(Auth::user())
-                  {{ Auth::user()->name }}
+                  {{ Auth::user()->display_name }} -
+                  <small>{{ Auth::user()->roles()->first()->display_name }}</small>
                 @endif
               </span>
             </a>
@@ -48,13 +49,15 @@
               </li>
               <!-- Menu Footer-->
               <li class="user-footer">
-                <!-- <div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat">Profile</a>
-                </div> -->
-                <div class="">
+                @if(Auth::user())
+                  <div class="pull-left">
+                    <a href="{{ url('change-password') }}" class="btn btn-default btn-flat">Cambiar clave</a>
+                  </div>
+                @endif
+                <div class="pull-right">
                   <form action="{{ route('logout') }}" method="POST">
                     {{ csrf_field() }}
-                    <button type="submit" class="btn btn-default btn-block" name="button">salir</button>
+                    <button type="submit" class="btn btn-default" name="button">salir</button>
                   </form>
                 </div>
               </li>
@@ -315,5 +318,6 @@
     $('.sidebar-menu').tree()
   })
 </script>
+@yield('script-js')
 </body>
 </html>

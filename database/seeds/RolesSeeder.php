@@ -29,7 +29,7 @@ class RolesSeeder extends Seeder {
              * file's permissions
              */
             'files_list' => 'Listar Documentos',
-            'files_updload' => 'Subir un documento',
+            'files_upload' => 'Subir un documento',
             'files_destroy' => 'Eliminar un documento',
             'files_download' => 'Descargar un documento',
 
@@ -67,7 +67,8 @@ class RolesSeeder extends Seeder {
            * file's permissions
            */
           'files_list' => 'Listar Documentos',
-          'files_download' => 'Descargar un documento',
+          'files_download' => 'Descargar un documentos',
+          //'files_upload' => 'Subir documentos',
 
           /*
            * user's permissions
@@ -88,7 +89,7 @@ class RolesSeeder extends Seeder {
           'expedient_list' => 'Listar Expedientes',
           'expedient_create' => 'Crear un expediente',
           'expedient_edit' => 'Editar un expediente',
-          'expedient_destroy' => 'Eliminar un expediente',
+  //        'expedient_destroy' => 'Eliminar un expediente',
         ];
 
 
@@ -103,7 +104,7 @@ class RolesSeeder extends Seeder {
            * file's permissions
            */
           'files_list' => 'Listar Documentos',
-          'files_updload' => 'Subir un documento',
+          'files_upload' => 'Subir un documento',
           'files_destroy' => 'Eliminar un documento',
           'files_download' => 'Descargar un documento',
         ];
@@ -128,7 +129,7 @@ class RolesSeeder extends Seeder {
 
         //create admin role
         $role = new Role();
-        $role->name = 'adminsitrador';
+        $role->name = 'administrador';
         $role->display_name = 'Administrador del sistema';
         $role->save();
 

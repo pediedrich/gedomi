@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 class Expedient extends Model
-{  
+{
 
     protected $fillable = ['title','number','user_create_id','user_owner_id','year_id','type_id'];
 
@@ -23,7 +23,7 @@ class Expedient extends Model
 
     public function passes()
     {
-      $this->belongsToMany('App\Pass','expedient_id');
+      return $this->hasMany('App\Pass');
     }
 
 }

@@ -31,7 +31,6 @@
           </div>
       </div>
 
-
       <!-- Año -->
       <div class="form-group">
         <div class="col-sm-6">
@@ -54,7 +53,7 @@
           <label class="control-label">Tipo Expte:</label>
           <select class="form-control" name="type_id">
             @foreach ($types as $key => $value)
-            <option value="{{$key}}" selected>{{$value}}</option>
+              <option value="{{$key}}">{{$value}}</option>
             @endforeach
           </select>
         </div>
@@ -64,9 +63,10 @@
       <div class="form-group">
         <div class="col-sm-6">
           <label class="control-label">Relator:</label>
-          <select class="form-control" name="user_id">
-            <option value="1">Dra. Acosta</option>
-            <option value="2">Dra. Ascencio</option>
+          <select class="form-control" name="user_owner_id">
+            @foreach ($userOwner as $key => $value)
+              <option value="{{$key}}">{{$value}}</option>
+            @endforeach
           </select>
         </div>
       </div>
