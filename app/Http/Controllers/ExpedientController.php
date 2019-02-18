@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use Carbon\Carbon;
 use App\Expedient;
 use App\File;
+use App\Role;
 use App\User;
 use App\Year;
 use App\Type;
@@ -66,7 +67,12 @@ class ExpedientController extends Controller
         return redirect()->back();
       }
 
-      $usersOwner = User::whereNotIn('id',[1])->pluck('display_name','id');
+      //$users = User::whereNotIn('id',[1])->pluck('display_name','id');
+
+      $usersOwner = User::whereHas('roles', function($q){
+        $q->where('name','proveyente');
+      })->pluck('display_name','id');
+
       $years = Year::pluck('number','id');
       $types = Type::pluck('name','id');
       $selected = Carbon::now()->format('Y');
