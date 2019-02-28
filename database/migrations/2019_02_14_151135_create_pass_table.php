@@ -15,7 +15,7 @@ class CreatePassTable extends Migration
     {
         Schema::create('pass', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('observation')->nullable();;
+            $table->string('observation')->nullable();
             $table->timestamp('received_at')->nullable();
 
             // expediente - objeto de la presente tabla

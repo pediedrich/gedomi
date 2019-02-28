@@ -24,5 +24,11 @@ class Pass extends Model
 
     }
 
+    public function userSender()
+    {
+      return $this->belongsTo('App\User','user_sender_id','id');
+
+    }
+
 
 }

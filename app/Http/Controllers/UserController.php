@@ -63,7 +63,7 @@ class UserController extends Controller
         $rules = array(
           'display_name' => 'required|string',
           'name' => 'required|unique:users|max:15|min:5',
-          'email' => 'required|email|unique:users',
+          //'email' => 'required|email|unique:users',
         );
 
         // do the validation
@@ -81,7 +81,7 @@ class UserController extends Controller
 
           } else {
               $user = new User();
-              $user->email = $request->get('email');
+              //$user->email = $request->get('email');
               $user->name = $request->get('name');
               $user->display_name = $request->get('display_name');
               $user->password = bcrypt($request->get('name'));
@@ -140,7 +140,7 @@ class UserController extends Controller
         $rules = array(
           'display_name' => 'required|string',
           'name' => 'required|unique:users|max:15|min:5',
-          'email' => 'required|email',
+          //'email' => 'required|email',
         );
 
         // do the validation
@@ -158,7 +158,7 @@ class UserController extends Controller
 
           } else {
               $user = new User();
-              $user->email = $request->get('email');
+              //$user->email = $request->get('email');
               $user->name = $request->get('name');
               $user->display_name = $request->get('display_name');
               $user->password = bcrypt($request->get('name'));

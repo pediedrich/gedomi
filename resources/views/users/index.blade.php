@@ -25,7 +25,7 @@
         <tr>
           <th scope="col">Nombre</th>
           <th scope="col">Usuario</th>
-          <th scope="col">Email</th>
+          {{-- <th scope="col">Email</th> --}}
           <th scope="col">Rol</th>
           <th scope="col"></th>
         </tr>
@@ -35,7 +35,7 @@
           <tr>
             <td>{{$user->display_name }}</td>
             <td>{{$user->name}}</td>
-            <td>{{$user->email}}</td>
+            {{-- <td>{{$user->email}}</td> --}}
             <td>{{$user->roles()->first()->display_name }}</td>
             <td>
                 <!--actions-->

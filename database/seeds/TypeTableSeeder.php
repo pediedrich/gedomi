@@ -14,6 +14,10 @@ class TypeTableSeeder extends Seeder
     {
 
       $type = new Type();
+      $type->name = 'Administrativo';
+      $type->save();
+
+      $type = new Type();
       $type->name = 'Laboral';
       $type->save();
 
@@ -32,6 +36,8 @@ class TypeTableSeeder extends Seeder
       $type = new Type();
       $type->name = 'Competencia Originaria';
       $type->save();
+
+
 
     }
 }

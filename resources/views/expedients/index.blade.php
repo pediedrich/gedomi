@@ -30,7 +30,9 @@
           <th scope="col">Caratula</th>
           <th scope="col">Numero</th>
           <th scope="col">Documentos</th>
-          <th scope="col">Pasado a</th>
+          @if(!Auth::user()->hasRole('relator'))
+            <th scope="col">Pasado a</th>
+          @endif
           <th scope="col">Observación</th>
           <th scope="col">Recibido</th>
           <th scope="col"></th>
@@ -48,13 +50,23 @@
             <td>
               {{$expedient->files()->count() }}
             </td>
+            @if (!Auth::user()->hasRole('relator'))
+              <td>
+                @if ($expedient->passes()->whereReceivedAt(null)->first())
+                  {{ $expedient->passes()->whereReceivedAt(null)->first()->userSender()->first()->display_name }}
+                @else
+                  {{ $expedient->passes()->get()->last()->userSender()->first()->display_name }}
+                @endif
+              </td>
+            @endif
             <td>
-              {{$expedient->passes()->first()->userReceivers->display_name }}
+              @if ($expedient->passes()->whereReceivedAt(null)->first())
+                {{ $expedient->passes()->whereReceivedAt(null)->first()->observation }}
+              @else
+                {{ $expedient->passes()->get()->last()->observation }}
+              @endif
             </td>
-            <td>
-              {{$expedient->passes()->first()->observation }}
-            </td>
-            @if ($expedient->passes()->first()->received_at != null)
+            @if (!$expedient->passes()->whereReceivedAt(null)->first())
               <td>
                 <span class="label label-success">recibido</span>
               </td>
@@ -69,15 +81,20 @@
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Acciones <span class="caret"></span></button>
                     <ul class="dropdown-menu" role="menu">
 
-                      @if ($expedient->passes()->first()->received_at === null && Auth::user()->hasRole('proveyente'))
+                      @if ($expedient->passes()->whereReceivedAt(null)->first())
                         <li><a href="{{ route('expedients.receive',array('id' => $expedient->id)) }}">Recibir</a></li>
                       @else
                         @permission('expedient_edit')
                           <li><a href="{{ route('expedients.edit',array('id' => $expedient->id)) }}">Editar</a></li>
                         @endpermission
                         @permission('expedient_show')
-                          <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Ingresar</a></li>
+                          <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
                         @endpermission
+                        {{-- @permission('expedient_egress') --}}
+                          <li><a href="{{ route('expedients.egress',array('id' => $expedient->id)) }}">Salida</a></li>
+                        {{-- @endpermission --}}
+                        <li><a href="{{ route('expedients.rechazar',array('id' => $expedient->id)) }}">Rechazar</a></li>
+                        <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Pasar</a></li>
                       @endif
                     </ul>
                 </div>

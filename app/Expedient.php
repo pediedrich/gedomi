@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Expedient extends Model
 {
 
-    protected $fillable = ['title','number','user_create_id','user_owner_id','year_id','type_id'];
+    protected $fillable = ['title','number','user_create_id','user_owner_id','year_id','type_id','state_id'];
 
     public function files(){
       return $this->hasMany('App\File');
@@ -24,6 +24,11 @@ class Expedient extends Model
     public function passes()
     {
       return $this->hasMany('App\Pass');
+    }
+
+    public function movements()
+    {
+      return $this->hasMany('App\Movement');
     }
 
 }

@@ -7,7 +7,7 @@
   </div>
   <div class="box-body">
       {!! Form::open(array('route' => array('users.store'), 'method' => 'POST')) !!}
-      <div class="row">
+      {{-- <div class="row">
           <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
               <div class="col-md-5">
                   {!! Form::label('email', 'E-mail') !!}
@@ -15,7 +15,7 @@
                   {!! $errors->first('email', '<p class="help-block">:message</p>') !!}
               </div>
           </div>
-      </div>
+      </div> --}}
       <div class="row">
           <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
               <div class="col-md-5">

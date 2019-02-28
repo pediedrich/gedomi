@@ -13,10 +13,12 @@ use App\File;
 use App\TypeFile;
 use App\Role;
 use App\User;
-use App\Year;
 use App\Type;
 use App\Pass;
+use App\State;
+use App\Movement;
 use Auth;
+use App\Year;
 
 class ExpedientController extends Controller
 {
@@ -39,10 +41,11 @@ class ExpedientController extends Controller
 
           // si es proveyente traigo los exptedientes que le fueron asignados
           if (Auth::user()->hasRole('proveyente')) {
-            $expedients = Expedient::whereUserOwnerId(Auth::user()->id)->get();
+            $expedients = Expedient::whereUserOwnerId(Auth::user()->id)->andWhereNotIn('state_id',[3])->get();
           }else {
             // si no, muestro todos
-            $expedients = Expedient::get();
+            $expedients = Expedient::WhereNotIn('state_id',[3])->get();
+            //return $expedients[0]->passes()->get()->last();
           }
 
           return view('expedients.index')
@@ -67,12 +70,10 @@ class ExpedientController extends Controller
         Flash::error('<strong> Permiso Denegado.-</strong>');
         return redirect()->back();
       }
-
-      //$users = User::whereNotIn('id',[1])->pluck('display_name','id');
-
-      $usersOwner = User::whereHas('roles', function($q){
-        $q->where('name','proveyente');
-      })->pluck('display_name','id');
+      $usersOwner = User::whereNotIn('id',[1])->pluck('display_name','id');
+      // $usersOwner = User::whereHas('roles', function($q){
+      //   $q->where('name','relator');
+      // })->pluck('display_name','id');
 
       $years = Year::pluck('number','id');
       $types = Type::pluck('name','id');
@@ -103,6 +104,8 @@ class ExpedientController extends Controller
         'number' => 'required|numeric',
       ]);
 
+      $state_id = State::where('name','=','Creado')->first()->id;
+
       // si pasa la validacion creo el expte
       try {
 
@@ -114,7 +117,8 @@ class ExpedientController extends Controller
             'year_id' => $request->input('year_id'),
             'type_id' => $request->input('type_id'),
             'user_create_id' => Auth::user()->id,
-            'user_owner_id' => $request->user_owner_id
+            'user_owner_id' => $request->user_owner_id,
+            'state_id' => $state_id,
           ]);
 
           Pass::create([
@@ -215,74 +219,195 @@ class ExpedientController extends Controller
         abort(403);
       }
 
-      return $id;
+      Expedient::delete($id);
+
+      Flash::success('expediente eliminado correctamente');
+      return redirect()->back();
     }
+
+    /**
+     ** Muestro el expte en cuestion para el Pase
+     */
+    public function pass($id)
+    {
+      $expedient = Expedient::find($id);
+      // traigo los pases que no se recibieron aun
+      $expte = $expedient->passes()->whereReceivedAt(null)->get();
+
+      // si hay pases sin recibir
+      if ($expte->count()) {
+        Flash::warning('El expediente no fue recibido en una instancia anterior');
+        return redirect()->back();
+      }else {
+        $users = User::whereNotIn('id',[1])->pluck('display_name','id');
+        return view('expedients.pass',compact('expedient','users'));
+      }
+    }
+
+    /**
+     ** Guardo el Pase en la DB
+     */
+    public function passConfirmed($id)
+    {
+      Pass::create([
+        'expedient_id' => $id,
+        'user_receiver_id' => request()->get('user_id'),
+        'user_sender_id' => Auth::user()->id,
+        'observation' => request()->get('observ')
+      ]);
+      return redirect()->route('expedients.index');
+    }
+
+    /**
+     * Reingreso del expediente
+     * Muestro en pantalla todos los expedientes que le dieron salida
+     */
+     public function ingress()
+     {
+         $expedients = Expedient::whereStateId(3)->get();
+         return view('expedients.ingress')->withExpedients($expedients);
+     }
+
+     /**
+      * Confirmo el reingreso del expediente
+      * Muestro en pantalla los datos del expte en cuestion y una Observación
+      */
+     public function ingressConfirmed($id)
+     {
+       $expedient = Expedient::find($id);
+       return view('expedients.ingressConfirmed')
+                        ->withExpedient($expedient);
+     }
+
+     /**
+      * Guardo el reingreso del expediente en DB
+      */
+     public function ingressConfirmedTrue($id)
+     {
+       $state_id = State::where('name','=','Ingreso')->first()->id;
+       $expedient = Expedient::find($id);
+       $expedient->state_id = $state_id;
+       $expedient->save();
+
+       //guardo el movimiento y la observacion
+       Movement::create([
+         'observation' => request()->get('observ'),
+         'action' => 'Ingreso de expediente',
+         'expedient_id' => $id,
+         'user_id' => Auth()->user()->id,
+       ]);
+       //genero el pase
+       return redirect()->route('expedients.index');
+     }
+
+    /**
+     * Salida del expediente
+     */
+     public function egress($id)
+     {
+       $expedient = Expedient::find($id);
+       $expedient->state_id = 3;
+       $expedient->save();
+
+       //guardo el movimiento y la observacion
+       Movement::create([
+         'action' => 'Salida de expediente',
+         'expedient_id' => $id,
+         'user_id' => Auth()->user()->id,
+       ]);
+
+       Flash::success('Expediente egresado satisfactoriamente');
+       return redirect()->back();
+     }
 
     public function receive($id)
     {
-
       $expedient = Expedient::find($id);
       $pass = $expedient->passes()->whereReceivedAt(null)->first();
       $pass->received_at = date('Y-m-d H:i:s');
-      // $pass->receiver_at = \Carbon::now();
       $pass->save();
-      //dd( $pass->receiver_at);
 
       return redirect()->back();
-
     }
 
-    public function addFile(Request $request,$id){
+    /**
+     ** retorno la vista para que le agregue una observacion al rechazo del pase
+     */
+    public function rechazar($id)
+    {
+      $expedient = Expedient::find($id);
+      return view('expedients.rechazar',compact('expedient'));
+    }
 
+    /**
+     ** Guardo el rechazo del pase y devuelvo
+     */
+    public function rechazado($id)
+    {
+      $expedient = Expedient::find($id);
+      $pass = $expedient->passes()->whereReceivedAt(null)->first();
+      $pass->received_at = date('Y-m-d H:i:s');
+      $pass->save();
+
+      Pass::create([
+        'expedient_id' => $id,
+        'user_receiver_id' => $pass->user_sender_id,
+        'user_sender_id' => Auth::user()->id,
+        'observation' => request()->get('observation'),
+      ]);
+
+      return redirect()->back();
+    }
+
+    public function addFile(Request $request,$id)
+    {
       request()->validate([
         'title_file' => 'required|string',
         'file' => 'required|mimes:pdf,doc,docx,odt',
       ]);
 
-
       //obtenemos el campo file definido en el formulario
        $file = $request->file('file');
 
-       //obtengo los datos del archivo
+       /**
+        *  Obtengo los datos del archivo
+        */
 
        //nombre
        $nombre = $file->getClientOriginalName();
        //extension
        $extension = $file->getClientOriginalExtension();
-
+       //destino
        $destination = public_path().'/files/'.$id.'/';
 
-       //existe el destino?
+       // no existe el destino?
        if (!file_exists($destination)) {
+         //creo carpeta destino
           mkdir($destination, 0777, true);
         }
 
-       $files_name = $nombre;
-       $file->move($destination,$files_name);
+      // $files_name = $nombre;
+       $file->move($destination,$nombre);
 
         //creo un Documento
         $file = new File();
         $file->title = $request->title_file;
-        $file->name = $files_name;
+        $file->name = $nombre;
         $file->url = $destination;
         $file->extension= $extension;
         $file->expedient_id = $id;
         $file->type_id = $request->typeFile_id;
         $file->user_id = Auth::user()->id;
-
-        //dd($file);
         $file->save();
 
         return redirect()->back();
-
     }
 
-    public function download($id,$files_id){
-
+    public function download($id,$files_id)
+    {
       $file = File::find($files_id);
       $name = $file->name;
 
-      //PDF file is stored under project/public/download/info.pdf
       $file= public_path(). '/files/'.$id.'/'.$file->name;
       $headers = array(
                 'Content-Type: application/pdf',
@@ -291,13 +416,12 @@ class ExpedientController extends Controller
       return response()->download($file, $name, $headers);
     }
 
-    public function destroyFile($expedient_id,$file_id) {
-
+    public function destroyFile($expedient_id,$file_id)
+    {
       $file = File::find($file_id);
       $file_path = public_path(). '/files/'.$expedient_id.'/'.$file->name;
 
       if ($file->exists($file_path)) {
-
           // elimino datos de la DB
           $file->destroy($file_id);
           //elimino el archivo fisico
@@ -305,8 +429,8 @@ class ExpedientController extends Controller
 
           Flash::success('<strong> Archivo eliminado correctamente.-</strong>');
           return redirect()->back();
-
       }else {
+
         Flash::warning('<strong> Archivo Inexistente.-</strong>');
         return redirect()->back();
       }

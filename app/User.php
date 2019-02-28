@@ -35,4 +35,9 @@ class User extends Authenticatable
       return $this->belongsToMany('App\Role');
     }
 
+    public function movements()
+    {
+      return $this->hasMany('App\Movement');
+    }
+
 }
