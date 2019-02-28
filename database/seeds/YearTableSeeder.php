@@ -17,7 +17,7 @@ class YearTableSeeder extends Seeder
 
         for ($i=2000; $i < 2021; $i++) {
           // code...
-          Year::create([
+          Year::firstOrCreate([
               'number' => $i
           ]);
         }

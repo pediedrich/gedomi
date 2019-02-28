@@ -12,15 +12,15 @@ class StateTableSeeder extends Seeder
      */
     public function run()
     {
-        State::create([
+        State::firstOrCreate([
           'name' => 'Creado',
         ]);
 
-        State::create([
+        State::firstOrCreate([
           'name' => 'Ingreso',
         ]);
 
-        State::create([
+        State::firstOrCreate([
           'name' => 'Egreso',
         ]);
     }

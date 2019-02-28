@@ -13,31 +13,33 @@ class TypeTableSeeder extends Seeder
     public function run()
     {
 
-      $type = new Type();
-      $type->name = 'Administrativo';
-      $type->save();
+      Type::firstOrCreate([
+        'name' => 'Laboral'
+      ]);
 
-      $type = new Type();
-      $type->name = 'Laboral';
-      $type->save();
+      Type::firstOrCreate([
+        'name' => 'Familia'
+      ]);
 
-      $type = new Type();
-      $type->name = 'Civil y Comercial';
-      $type->save();
+      Type::firstOrCreate([
+        'name' => 'Civil y Comercial'
+      ]);
 
-      $type = new Type();
-      $type->name = 'Contensioso Administativo';
-      $type->save();
+      Type::firstOrCreate([
+        'name' => 'Penal'
+      ]);
 
-      $type = new Type();
-      $type->name = 'Penal';
-      $type->save();
+      Type::firstOrCreate([
+        'name' => 'Administrativo'
+      ]);
 
-      $type = new Type();
-      $type->name = 'Competencia Originaria';
-      $type->save();
+      Type::firstOrCreate([
+        'name' => 'Contensioso Administativo'
+      ]);
 
-
+      Type::firstOrCreate([
+        'name' => 'Competencia Originaria'
+      ]);
 
     }
 }

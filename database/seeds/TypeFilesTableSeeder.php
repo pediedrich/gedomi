@@ -12,8 +12,20 @@ class TypeFilesTableSeeder extends Seeder
      */
     public function run()
     {
-        TypeFile::create([
+        TypeFile::firstOrCreate([
           'name' => 'Resolución'
+        ]);
+
+        TypeFile::firstOrCreate([
+          'name' => 'Inhibicion'
+        ]);
+
+        TypeFile::firstOrCreate([
+          'name' => 'Sentencia'
+        ]);
+
+        TypeFile::firstOrCreate([
+          'name' => 'Medida Mejor Proveer'
         ]);
     }
 }
