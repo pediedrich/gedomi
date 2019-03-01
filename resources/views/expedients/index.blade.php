@@ -12,9 +12,11 @@
   <div class="box-header with-border">
     <h3 class="box-title">Listado Expedientes</h3>
     @permission('expedient_create')
-    <div class="box-tools pull-right">
-      <a href="{{ route('expedients.create') }}" class="btn btn-primary">+<span class="hidden-xs">Expte Nuevo</span></a>
-    </div>
+      @if(!isset($create))
+        <div class="box-tools pull-right">
+          <a href="{{ route('expedients.create') }}" class="btn btn-primary">+<span class="hidden-xs">Expte Nuevo</span></a>
+        </div>
+      @endif
     @endpermission
   </div>
   <div class="box-body">

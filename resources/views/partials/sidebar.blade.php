@@ -26,14 +26,14 @@
           <ul class="treeview-menu" style="display: block;">
             @permission('expedient_list')
             <li {{ (Request::is('*expedients*') ? 'class=active' : '') }}>
-              <a href="{{ route('expedients.index') }}"><i class="fa fa-circle-o"></i>Asignar</a>
+              <a href="{{ route('expedients.assign') }}"><i class="fa fa-circle-o"></i>Asignar</a>
             </li>
             @endpermission
             <li {{ (Request::is('*expedients/ingress/now*') ? 'class=active' : '') }}>
               <a href="{{ route('expedients.ingress') }}"><i class="fa fa-circle-o"></i>Ingresar</a>
             </li>
             <li>
-              <a href=""><i class="fa fa-circle-o"></i>Mis Expedientes</a>
+              <a href="{{ route('expedients.index') }}"><i class="fa fa-circle-o"></i>Mis Expedientes</a>
             </li>
           </ul>
       </li>

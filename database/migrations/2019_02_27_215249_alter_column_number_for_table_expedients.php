@@ -15,6 +15,7 @@ class AlterColumnNumberForTableExpedients extends Migration
     {
         Schema::table('expedients', function (Blueprint $table) {
             $table->string('number')->change();
+            $table->string('display_name')->nullable()->change();
         });
     }
 

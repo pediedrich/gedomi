@@ -36,24 +36,37 @@ class ExpedientController extends Controller
     public function index()
     {
       // permisos
-
         if( Auth::user()->can('expedient_list')){
-
           // si es proveyente traigo los exptedientes que le fueron asignados
-          if (Auth::user()->hasRole('proveyente')) {
+          if (Auth::user()->hasRole('relator')) {
             $expedients = Expedient::whereUserOwnerId(Auth::user()->id)->andWhereNotIn('state_id',[3])->get();
           }else {
             // si no, muestro todos
             $expedients = Expedient::WhereNotIn('state_id',[3])->get();
             //return $expedients[0]->passes()->get()->last();
           }
+          //creo la variable $create para ocupar la misma vista y no mostrar el boton de crear exptes
+          $create = false;
+          return view('expedients.index')
+                        ->withCreate($create)
+                        ->withExpedients($expedients);
+        }else {
+          Flash::warning('no tiene permisos');
+          return redirect()->back();
+        }
+    }
+
+    public function indexAssign()
+    {
+      // Muestro los expedientes para asignar y/o crear
+        if( Auth::user()->can('expedient_create')){
+          $expedients = Expedient::WhereNotIn('state_id',[3])->get();
 
           return view('expedients.index')
                         ->withExpedients($expedients);
         }else {
           Flash::warning('no tiene permisos');
           return redirect()->back();
-          //abort(403, 'No tiene permisos para Listar Expedientes.-');
         }
     }
 
