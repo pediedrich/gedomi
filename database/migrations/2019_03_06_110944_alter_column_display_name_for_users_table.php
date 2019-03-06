@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterColumnNumberForTableExpedients extends Migration
+class AlterColumnDisplayNameForUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AlterColumnNumberForTableExpedients extends Migration
      */
     public function up()
     {
-        Schema::table('expedients', function (Blueprint $table) {
-            $table->string('number')->change();
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('display_name')->nullable()->change();
         });
     }
 
@@ -25,7 +25,7 @@ class AlterColumnNumberForTableExpedients extends Migration
      */
     public function down()
     {
-        Schema::table('expedients', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             //
         });
     }
