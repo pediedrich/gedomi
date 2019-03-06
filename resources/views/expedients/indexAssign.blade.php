@@ -54,6 +54,7 @@
             </td>
             @if (!Auth::user()->hasRole('relator'))
               <td>
+                <!-- muestro el usuario a quien se le paso el condicional es por que la consulta es diferente dependiendo del caso -->
                 @if ($expedient->passes()->whereReceivedAt(null)->first())
                   {{ $expedient->passes()->whereReceivedAt(null)->first()->userReceiver()->first()->display_name }}
                 @else
@@ -62,7 +63,7 @@
               </td>
             @endif
             <td>
-              @if ($expedient->passes()->count() && $expedient->passes()->whereReceivedAt(null)->first())
+              @if ($expedient->passes()->whereReceivedAt(null)->first())
                 {{ $expedient->passes()->whereReceivedAt(null)->first()->observation }}
               @else
                 {{ $expedient->passes()->get()->last()->observation }}
@@ -91,16 +92,6 @@
                         @permission('expedient_egress')
                           <li><a href="{{ route('expedients.egress',array('id' => $expedient->id)) }}">Salida</a></li>
                         @endpermission
-                      @endif
-                      <!-- menu en caso del relator -->
-                      @if ($expedient->passes()->whereReceivedAt(null)->first() && Auth::user()->hasRole('relator'))
-                        <li><a href="{{ route('expedients.receive',array('id' => $expedient->id)) }}">Recibir</a></li>
-                      @else
-                        @permission('expedient_show')
-                          <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
-                        @endpermission
-                        <li><a href="{{ route('expedients.rechazar',array('id' => $expedient->id)) }}">Rechazar</a></li>
-                        <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Pasar</a></li>
                       @endif
                     </ul>
                 </div>

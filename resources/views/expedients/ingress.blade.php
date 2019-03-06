@@ -41,9 +41,9 @@
               <div class="btn-group pull-right">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Acciones <span class="caret"></span></button>
                   <ul class="dropdown-menu" role="menu">
-                      {{-- @permission('expedient_ingress') --}}
+                      @permission('expedient_ingress')
                         <li><a href="{{ route('expedients.ingress.confirmed',array('id' => $expedient->id)) }}">Reingresar</a></li>
-                      {{-- @endpermission --}}
+                      @endpermission
                   </ul>
               </div>
               <!--end actions-->

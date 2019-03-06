@@ -98,10 +98,9 @@
 
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version Beta</b> 1.10.18
+      <b>Version Beta</b> 1.2.18
     </div>
-    <strong>Copyright &copy; 2018 <a href="#">STI</a>.</strong> All rights
-    reserved.
+    <strong>Copyright &copy; 2018 <a href="#"> STI </a>.</strong> Todos los derechos Reservados
   </footer>
 
   <!-- Control Sidebar -->

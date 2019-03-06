@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Session;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Response;
 use Carbon\Carbon;
+use Illuminate\Support\Collection as Collection;
+use Auth;
+
 use App\Expedient;
 use App\File;
 use App\TypeFile;
@@ -17,7 +20,6 @@ use App\Type;
 use App\Pass;
 use App\State;
 use App\Movement;
-use Auth;
 use App\Year;
 
 class ExpedientController extends Controller
@@ -37,16 +39,12 @@ class ExpedientController extends Controller
     {
       // permisos
         if( Auth::user()->can('expedient_list')){
-          // si es proveyente traigo los exptedientes que le fueron asignados
-          if (Auth::user()->hasRole('relator')) {
-            $expedients = Expedient::whereUserOwnerId(Auth::user()->id)->andWhereNotIn('state_id',[3])->get();
-          }else {
-            // si no, muestro todos
-            $expedients = Expedient::WhereNotIn('state_id',[3])->get();
-            //return $expedients[0]->passes()->get()->last();
-          }
-          //creo la variable $create para ocupar la misma vista y no mostrar el boton de crear exptes
+          // traigo los exptedientes que le fueron asignados
+            $expedients = Expedient::whereUserOwnerId(Auth::user()->id)->whereNotIn('state_id',[3])->get();
+
+          //creo la variable $create para ocupar la misma vista en el caso de asignar y no mostrar el boton de crear exptes
           $create = false;
+
           return view('expedients.index')
                         ->withCreate($create)
                         ->withExpedients($expedients);
@@ -58,11 +56,11 @@ class ExpedientController extends Controller
 
     public function indexAssign()
     {
-      // Muestro los expedientes para asignar y/o crear
+      // Muestro los expedientes para dentro del sector y boton crear
         if( Auth::user()->can('expedient_create')){
+          //estado 3 = "Egreso" => expediente fuera de la dependencia
           $expedients = Expedient::WhereNotIn('state_id',[3])->get();
-
-          return view('expedients.index')
+          return view('expedients.indexAssign')
                         ->withExpedients($expedients);
         }else {
           Flash::warning('no tiene permisos');
@@ -119,6 +117,12 @@ class ExpedientController extends Controller
 
       $state_id = State::where('name','=','Creado')->first()->id;
 
+      if ($request->user_owner_id == 0) {
+        $owner = null;
+      }else {
+        $owner = $request->user_owner_id;
+      }
+
       // si pasa la validacion creo el expte
       try {
 
@@ -130,16 +134,18 @@ class ExpedientController extends Controller
             'year_id' => $request->input('year_id'),
             'type_id' => $request->input('type_id'),
             'user_create_id' => Auth::user()->id,
-            'user_owner_id' => $request->user_owner_id,
+            'user_owner_id' => $owner,
             'state_id' => $state_id,
           ]);
 
-          Pass::create([
-            'expedient_id' => $expedient->id,
-            'user_receiver_id' => $request->user_owner_id,
-            'user_sender_id' => Auth::user()->id,
-            'observation' => $request->input('observation'),
-          ]);
+          // si viene usuario genero el pase
+
+            Pass::create([
+              'expedient_id' => $expedient->id,
+              'user_receiver_id' => $owner,
+              'user_sender_id' => Auth::user()->id,
+              'observation' => $request->input('observation'),
+            ]);
 
         DB::commit();
 
@@ -244,17 +250,8 @@ class ExpedientController extends Controller
     public function pass($id)
     {
       $expedient = Expedient::find($id);
-      // traigo los pases que no se recibieron aun
-      $expte = $expedient->passes()->whereReceivedAt(null)->get();
-
-      // si hay pases sin recibir
-      if ($expte->count()) {
-        Flash::warning('El expediente no fue recibido en una instancia anterior');
-        return redirect()->back();
-      }else {
-        $users = User::whereNotIn('id',[1])->pluck('display_name','id');
-        return view('expedients.pass',compact('expedient','users'));
-      }
+      $users = User::whereNotIn('id',[1])->pluck('display_name','id');
+      return view('expedients.pass',compact('expedient','users'));
     }
 
     /**
@@ -262,13 +259,29 @@ class ExpedientController extends Controller
      */
     public function passConfirmed($id)
     {
-      Pass::create([
-        'expedient_id' => $id,
-        'user_receiver_id' => request()->get('user_id'),
-        'user_sender_id' => Auth::user()->id,
-        'observation' => request()->get('observ')
-      ]);
-      return redirect()->route('expedients.index');
+      // consulto si no tiene un pase sin recibir.
+      $expedient = Expedient::find($id);
+      $pass = $expedient->passes()->whereReceivedAt(null)->first();
+
+      //si hay pases sin recibir, quiere decir que el usuario original nunca acepto el pase, y el coordinador esta reasignando
+        if ($pass->count()) {
+          $userOwnerOld = $pass->first()->userReceiver()->first()->display_name;
+          // se pone al relator como receptor del pase sin recibir y se observa
+          $pass->received_at = date('Y-m-d H:i:s');
+          $pass->user_receiver_id = Auth::user()->id;
+          $pass->observation =  'Expediente reasignado de '.$userOwnerOld.' a '. Auth::user()->display_name;
+          dd($pass);
+          $pass->save();
+        }
+
+        // se crea el nuevo pase
+        Pass::create([
+          'expedient_id' => $id,
+          'user_receiver_id' => request()->get('user_id'),
+          'user_sender_id' => Auth::user()->id,
+          'observation' => request()->get('observ')
+        ]);
+        return redirect()->route('expedients.index');
     }
 
     /**

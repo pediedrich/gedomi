@@ -62,7 +62,7 @@ class UserController extends Controller
         // create the validation rules
         $rules = array(
           'display_name' => 'required|string',
-          'name' => 'required|unique:users|max:15|min:5',
+          'name' => 'required|unique:users|min:5',
           //'email' => 'required|email|unique:users',
         );
 

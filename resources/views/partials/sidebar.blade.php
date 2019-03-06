@@ -24,17 +24,21 @@
             </span>
           </a>
           <ul class="treeview-menu" style="display: block;">
-            @permission('expedient_list')
-            <li {{ (Request::is('*expedients*') ? 'class=active' : '') }}>
-              <a href="{{ route('expedients.assign') }}"><i class="fa fa-circle-o"></i>Asignar</a>
-            </li>
+            @permission('expedient_assign')
+              <li {{ (Request::is('*expedients/assign/list*') ? 'class=active' : '') }}>
+                <a href="{{ route('expedients.assign.list') }}"><i class="fa fa-circle-o"></i>Listado</a>
+              </li>
             @endpermission
-            <li {{ (Request::is('*expedients/ingress/now*') ? 'class=active' : '') }}>
-              <a href="{{ route('expedients.ingress') }}"><i class="fa fa-circle-o"></i>Ingresar</a>
-            </li>
-            <li>
-              <a href="{{ route('expedients.index') }}"><i class="fa fa-circle-o"></i>Mis Expedientes</a>
-            </li>
+            @permission('expedient_ingress')
+              <li {{ (Request::is('*expedients/ingress/now*') ? 'class=active' : '') }}>
+                <a href="{{ route('expedients.ingress') }}"><i class="fa fa-circle-o"></i>Reingresar</a>
+              </li>
+            @endpermission
+            @permission('expedient_list')
+              <li {{ (Request::is('*expedients') ? 'class=active' : '') }}>
+                <a href="{{ route('expedients.index') }}"><i class="fa fa-circle-o"></i>Mis Expedientes</a>
+              </li>
+            @endpermission
           </ul>
       </li>
       @permission('user_list')

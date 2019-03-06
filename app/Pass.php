@@ -18,7 +18,7 @@ class Pass extends Model
         'expedient_id', 'user_receiver_id', 'user_sender_id','observation'
     ];
 
-    public function userReceivers()
+    public function userReceiver()
     {
       return $this->belongsTo('App\User','user_receiver_id','id');
 

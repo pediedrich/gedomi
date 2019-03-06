@@ -26,6 +26,7 @@ class RolesSeeder extends Seeder {
             'expedient_destroy' => 'Eliminar un expediente',
             'expedient_ingress' => 'Ingresar un expediente',
             'expedient_egress' => 'Dar Salida un expediente',
+            'expedient_assign' => 'Asignar expedientes',
 
             /*
              * file's permissions
@@ -93,6 +94,10 @@ class RolesSeeder extends Seeder {
           'expedient_edit' => 'Editar un expediente',
           'expedient_ingress' => 'Ingresar un expediente',
           'expedient_egress' => 'Dar Salida un expediente',
+          'expedient_show_admin' => 'Ingresar a expedientes administrativos',
+
+          'files_upload_admin' => 'Subir un documento administrativo',
+
   //        'expedient_destroy' => 'Eliminar un expediente',
         ];
 
@@ -105,15 +110,10 @@ class RolesSeeder extends Seeder {
           'expedient_edit' => 'Editar un expediente',
           'expedient_ingress' => 'Ingresar un expediente',
           'expedient_egress' => 'Dar Salida un expediente',
-  //        'expedient_destroy' => 'Eliminar un expediente',
+          'expedient_destroy' => 'Eliminar un expediente',
+          'expedient_assign' => 'Asignar expedientes',
 
-          /*
-           * file's permissions
-           */
-          'files_list' => 'Listar Documentos',
-          'files_upload' => 'Subir un documento',
-          'files_destroy' => 'Eliminar un documento',
-          'files_download' => 'Descargar un documento',
+
         ];
 
 
@@ -195,7 +195,7 @@ class RolesSeeder extends Seeder {
         //attach role to the ministro user
         $userM->attachRole($roleM);
 
-        //create jefe de coordinadores role
+        //create boss coordinators role
         $roleBC = new Role();
         $roleBC->name = 'coordinador superior';
         $roleBC->display_name = 'Coordinador Superior';

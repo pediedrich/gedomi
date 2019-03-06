@@ -16,7 +16,7 @@
       <!-- Caratula -->
       <div class="form-group{{ $errors->has('title') ? ' has-error' : '' }}">
           <div class="col-md-8">
-            {{ Form::label('title', 'Caratula') }}
+            {{ Form::label('title', 'Caratula*') }}
             {{ Form::text('title', null, ['class' => 'form-control']) }}
             {!! $errors->first('title', '<p class="help-block">:message</p>')  !!}
           </div>
@@ -25,7 +25,7 @@
       <!-- Numero -->
       <div class="form-group{{ $errors->has('number') ? ' has-error' : '' }}">
           <div class="col-md-6">
-            {{ Form::label('number', 'Número') }}
+            {{ Form::label('number', 'Número*') }}
             {{ Form::text('number', null, ['class' => 'form-control']) }}
             {!! $errors->first('number', '<p class="help-block">:message</p>')  !!}
           </div>
@@ -34,7 +34,7 @@
       <!-- Año -->
       <div class="form-group">
         <div class="col-sm-6">
-          <label class="control-label">Año:</label>
+          <label class="control-label">Año*</label>
           <select class="form-control" name="year_id">
             @foreach ($years as $key => $value)
               @if($value == $selected)
@@ -50,7 +50,7 @@
       <!-- tipo expediente -->
       <div class="form-group">
         <div class="col-sm-6">
-          <label class="control-label">Tipo Expte:</label>
+          <label class="control-label">Tipo Expte*</label>
           <select class="form-control" name="type_id">
             @foreach ($types as $key => $value)
               <option value="{{$key}}">{{$value}}</option>
@@ -62,7 +62,7 @@
       <!-- personal que tramita la causa -->
       <div class="form-group">
         <div class="col-sm-6">
-          <label class="control-label">Relator:</label>
+          <label class="control-label">Asignar*</label>
           <select class="form-control" name="user_owner_id">
             @foreach ($userOwner as $key => $value)
               <option value="{{$key}}">{{$value}}</option>
@@ -91,9 +91,16 @@
     </form>
   </div>
   <!-- /.box-body -->
-  {{-- <div class="box-footer">
-
-  </div> --}}
+  <div class="box-footer">
+    <div class="box box-danger">
+          <div class="box-header with-border">
+            <h4>Importante!</h4>
+            <p>Los campos con (*) son  obligatorios.-</p>
+            <!-- /.box-tools -->
+          </div>
+          <!-- /.box-header -->
+    </div>
+  </div>
   <!-- /.box-footer-->
 </div>
 <!-- /.box -->

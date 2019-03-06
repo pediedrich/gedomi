@@ -33,7 +33,7 @@ Route::resource('expedients','ExpedientController');
  * Rutas del Expediente
  */
 Route::resource('expedients','ExpedientController');
-Route::get('expedients/assign/list', ['as' => 'expedients.assign', 'uses' => 'ExpedientController@indexAssign']);
+Route::get('expedients/assign/list', ['as' => 'expedients.assign.list', 'uses' => 'ExpedientController@indexAssign']);
 // pases
 Route::get('expedients/{expedient_id}/pass', ['as' => 'expedients.pass', 'uses' => 'ExpedientController@pass']);
 Route::post('expedients/{expedient_id}/pass', ['as' => 'expedients.pass.confirmed', 'uses' => 'ExpedientController@passConfirmed']);
