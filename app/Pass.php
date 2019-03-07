@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pass extends Model
 {
-
     protected $table = 'pass';
 
     /**
@@ -21,14 +20,15 @@ class Pass extends Model
     public function userReceiver()
     {
       return $this->belongsTo('App\User','user_receiver_id','id');
-
     }
 
     public function userSender()
     {
       return $this->belongsTo('App\User','user_sender_id','id');
-
     }
 
-
+    public function expedient()
+    {
+      return $this->belongsTo('App\Expedient','expedient_id','id');
+    }
 }

@@ -37,6 +37,10 @@ Route::get('expedients/assign/list', ['as' => 'expedients.assign.list', 'uses' =
 // pases
 Route::get('expedients/{expedient_id}/pass', ['as' => 'expedients.pass', 'uses' => 'ExpedientController@pass']);
 Route::post('expedients/{expedient_id}/pass', ['as' => 'expedients.pass.confirmed', 'uses' => 'ExpedientController@passConfirmed']);
+
+Route::get('expedients/{expedient_id}/reassignPass', ['as' => 'expedients.reassignPass', 'uses' => 'ExpedientController@reassignPass']);
+Route::post('expedients/{expedient_id}/reassignConfirmed', ['as' => 'expedients.reassign.confirmed', 'uses' => 'ExpedientController@reassignConfirmed']);
+
 Route::get('expedients/{expedient_id}/receive', ['as' => 'expedients.receive', 'uses' => 'ExpedientController@receive']);
 Route::get('expedients/{expedient_id}/rechazar',['as' => 'expedients.rechazar', 'uses' => 'ExpedientController@rechazar']);
 Route::post('expedients/{expedient_id}/rechazar', ['as' => 'expedients.rechazado', 'uses' => 'ExpedientController@rechazado']);

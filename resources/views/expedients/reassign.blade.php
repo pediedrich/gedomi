@@ -1,7 +1,7 @@
 @extends('main')
 
 @section('title')
-  <strong>Pasar expediente</strong>
+  <strong>Reasignar expediente</strong>
 @endsection
 @section('content')
 <!-- Default box -->
@@ -14,7 +14,7 @@
      </h3>
   </div>
   <div class="box-body">
-      {!! Form::model($expedient, ['route' => ['expedients.pass.confirmed', $expedient->id]]) !!}
+      {!! Form::model($expedient, ['route' => ['expedients.reassign.confirmed', $expedient->id]]) !!}
       <div class="row">
 
         <!-- personal que tramita la causa -->

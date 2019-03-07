@@ -40,7 +40,14 @@ class ExpedientController extends Controller
       // permisos
         if( Auth::user()->can('expedient_list')){
           // traigo los exptedientes que le fueron asignados
-          $expedients = Expedient::whereUserOwnerId(Auth::user()->id)->whereNotIn('state_id',[3])->get();
+         $expedients = Expedient::whereUserOwnerId(Auth::user()->id)->whereNotIn('state_id',[3])->get();
+          // traigo los exptes que le fueron pasados
+          // $expedients = Expedient::join("pass","expedients.id","=","pass.expedient_id")
+          //               ->where('pass.user_receiver_id','=',Auth::user()->id)
+          //               ->get();
+
+                        // dd($expedients[0]->passes()->get());
+
           //creo la variable $create para ocupar la misma vista en el caso de asignar y no mostrar el boton de crear exptes
           $create = false;
           return view('expedients.index')
@@ -248,14 +255,49 @@ class ExpedientController extends Controller
     public function pass($id)
     {
       $expedient = Expedient::find($id);
-      $users = User::whereNotIn('id',[1])->pluck('display_name','id');
-      return view('expedients.pass',compact('expedient','users'));
+      // traigo los pases que no se recibieron aun
+      $expte = $expedient->passes()->whereReceivedAt(null)->get();
+      // si hay pases sin recibir
+      if ($expte->count()) {
+        Flash::warning('El expediente no fue recibido en una instancia anterior');
+        return redirect()->back();
+      }else {
+        $users = User::whereNotIn('id',[1])->pluck('display_name','id');
+        return view('expedients.pass',compact('expedient','users'));
+      }
     }
 
     /**
      ** Guardo el Pase en la DB
      */
     public function passConfirmed($id)
+    {
+      // consulto si no tiene un pase sin recibir.
+      $expedient = Expedient::find($id);
+      $expedient->user_owner_id = request()->get('user_id');
+      $expedient->save();
+
+      Pass::create([
+        'expedient_id' => $id,
+        'user_receiver_id' => request()->get('user_id'),
+        'user_sender_id' => Auth::user()->id,
+        'observation' => request()->get('observ')
+      ]);
+      return redirect()->route('expedients.index');
+    }
+
+
+    public function reassignPass($id)
+    {
+      $expedient = Expedient::find($id);
+      $users = User::whereNotIn('id',[1])->pluck('display_name','id');
+      return view('expedients.reassign',compact('expedient','users'));
+    }
+
+    /**
+     ** Guardo el Pase en la DB
+     */
+    public function reassignConfirmed($id)
     {
       // consulto si no tiene un pase sin recibir.
       $expedient = Expedient::find($id);
@@ -371,11 +413,24 @@ class ExpedientController extends Controller
      */
     public function rechazado($id)
     {
+      request()->validate([
+        'observation' => 'required|string',
+      ]);
+
+      // ANALIZAR LA SITUACION EN ESTE CASO.-
       $expedient = Expedient::find($id);
+
+      //obtengo pase sin recibir
       $pass = $expedient->passes()->whereReceivedAt(null)->first();
       $pass->received_at = date('Y-m-d H:i:s');
+      $pass->observation = 'pase rechazado';
       $pass->save();
 
+      //cambio de owner para que el expte aparezca en la bandeja del ultimo que envio
+      $expedient->user_owner_id = $pass->user_sender_id;
+      $expedient->update();
+
+      // genero el nuevo pase
       Pass::create([
         'expedient_id' => $id,
         'user_receiver_id' => $pass->user_sender_id,
@@ -383,7 +438,7 @@ class ExpedientController extends Controller
         'observation' => request()->get('observation'),
       ]);
 
-      return redirect()->back();
+      return redirect('expedients');
     }
 
     public function addFile(Request $request,$id)

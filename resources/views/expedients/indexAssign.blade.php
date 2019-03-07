@@ -32,11 +32,10 @@
           <th scope="col">Caratula</th>
           <th scope="col">Numero</th>
           <th scope="col">Documentos</th>
-          @if(!Auth::user()->hasRole('relator'))
-            <th scope="col">Pasado a</th>
-          @endif
+          <th scope="col">Pasado a</th>
+          <th scope="col">fecha pase</th>
           <th scope="col">Observación</th>
-          <th scope="col">Recibido</th>
+          <th scope="col">estado</th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -52,16 +51,22 @@
             <td>
               {{$expedient->files()->count() }}
             </td>
-            @if (!Auth::user()->hasRole('relator'))
-              <td>
-                <!-- muestro el usuario a quien se le paso el condicional es por que la consulta es diferente dependiendo del caso -->
-                @if ($expedient->passes()->whereReceivedAt(null)->first())
-                  {{ $expedient->passes()->whereReceivedAt(null)->first()->userReceiver()->first()->display_name }}
-                @else
-                  {{ $expedient->passes()->get()->last()->userReceiver()->first()->display_name }}
-                @endif
-              </td>
-            @endif
+            <td>
+              <!-- muestro el usuario a quien se le paso el condicional es por que la consulta es diferente dependiendo del caso -->
+              @if ($expedient->passes()->whereReceivedAt(null)->first())
+                {{ $expedient->passes()->whereReceivedAt(null)->first()->userReceiver()->first()->display_name }}
+              @else
+                {{ $expedient->passes()->get()->last()->userReceiver()->first()->display_name }}
+              @endif
+            </td>
+            <td>
+              <!-- muestro el usuario a quien se le paso el condicional es por que la consulta es diferente dependiendo del caso -->
+              @if ($expedient->passes()->whereReceivedAt(null)->first())
+                {{ $expedient->passes()->whereReceivedAt(null)->first()->created_at->format('d M Y') }}
+              @else
+                {{ $expedient->passes()->get()->last()->created_at->format('d M Y') }}
+              @endif
+            </td>
             <td>
               @if ($expedient->passes()->whereReceivedAt(null)->first())
                 {{ $expedient->passes()->whereReceivedAt(null)->first()->observation }}
@@ -88,9 +93,12 @@
                         @permission('expedient_edit')
                         <li><a href="{{ route('expedients.edit',array('id' => $expedient->id)) }}">Editar</a></li>
                         @endpermission
-                        <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Reasignar</a></li>
+                        <li><a href="{{ route('expedients.reassignPass',array('id' => $expedient->id)) }}">Reasignar</a></li>
                         @permission('expedient_egress')
                           <li><a href="{{ route('expedients.egress',array('id' => $expedient->id)) }}">Salida</a></li>
+                        @endpermission
+                        @permission('expedient_destroy')
+                          <li><a href="{{ route('expedients.destroy',array('id' => $expedient->id)) }}">Eliminar</a></li>
                         @endpermission
                       @endif
                     </ul>

@@ -32,9 +32,9 @@
           <th scope="col">Caratula</th>
           <th scope="col">Numero</th>
           <th scope="col">Documentos</th>
-          @if(!Auth::user()->hasRole('relator'))
+          <!-- @if(!Auth::user()->hasRole('relator'))
             <th scope="col">Pasado a</th>
-          @endif
+          @endif -->
           <th scope="col">Observación</th>
           <th scope="col">Recibido</th>
           <th scope="col"></th>
@@ -52,15 +52,7 @@
             <td>
               {{$expedient->files()->count() }}
             </td>
-            @if (!Auth::user()->hasRole('relator'))
-              <td>
-                @if ($expedient->passes()->whereReceivedAt(null)->first())
-                  {{ $expedient->passes()->whereReceivedAt(null)->first()->userReceiver()->first()->display_name }}
-                @else
-                  {{ $expedient->passes()->get()->last()->userReceiver()->first()->display_name }}
-                @endif
-              </td>
-            @endif
+
             <td>
               @if ($expedient->passes()->count() && $expedient->passes()->whereReceivedAt(null)->first())
                 {{ $expedient->passes()->whereReceivedAt(null)->first()->observation }}
@@ -87,19 +79,20 @@
                         @permission('expedient_edit')
                         <li><a href="{{ route('expedients.edit',array('id' => $expedient->id)) }}">Editar</a></li>
                         @endpermission
-                        <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Reasignar</a></li>
+                        <!-- <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Reasignar</a></li> -->
                         @permission('expedient_egress')
                           <li><a href="{{ route('expedients.egress',array('id' => $expedient->id)) }}">Salida</a></li>
                         @endpermission
                       @endif
+
                       <!-- menu en caso del relator -->
                       @if ($expedient->passes()->whereReceivedAt(null)->first() && Auth::user()->hasRole('relator'))
                         <li><a href="{{ route('expedients.receive',array('id' => $expedient->id)) }}">Recibir</a></li>
+                        <li><a href="{{ route('expedients.rechazar',array('id' => $expedient->id)) }}">Rechazar</a></li>
                       @else
                         @permission('expedient_show')
                           <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
                         @endpermission
-                        <li><a href="{{ route('expedients.rechazar',array('id' => $expedient->id)) }}">Rechazar</a></li>
                         <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Pasar</a></li>
                       @endif
                     </ul>

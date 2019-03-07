@@ -15,10 +15,11 @@
   <div class="box-body">
     {!! Form::open(array('route' => array('expedients.rechazado', $expedient->id), 'method' => 'POST')) !!}
     <div class="row">
-      <div class="form-group">
+      <div class="form-group{{ $errors->has('observation') ? ' has-error' : '' }}">
         <div class="col-md-12">
           {!! Form::label('observation','Observación') !!}
           {!! Form::text('observation','',['class'=>'form-control']) !!}
+          {!! $errors->first('observation', '<p class="help-block">:message</p>')  !!}
         </div>
       </div>
       <div class="form-group">
@@ -28,7 +29,6 @@
       </div>
     </div>
     {!! Form::close() !!}
-
     {{-- {{ $expedients->links() }} --}}
   </div>
   <!-- /.box-body -->
