@@ -40,11 +40,9 @@ class ExpedientController extends Controller
       // permisos
         if( Auth::user()->can('expedient_list')){
           // traigo los exptedientes que le fueron asignados
-            $expedients = Expedient::whereUserOwnerId(Auth::user()->id)->whereNotIn('state_id',[3])->get();
-
+          $expedients = Expedient::whereUserOwnerId(Auth::user()->id)->whereNotIn('state_id',[3])->get();
           //creo la variable $create para ocupar la misma vista en el caso de asignar y no mostrar el boton de crear exptes
           $create = false;
-
           return view('expedients.index')
                         ->withCreate($create)
                         ->withExpedients($expedients);
@@ -264,24 +262,27 @@ class ExpedientController extends Controller
       $pass = $expedient->passes()->whereReceivedAt(null)->first();
 
       //si hay pases sin recibir, quiere decir que el usuario original nunca acepto el pase, y el coordinador esta reasignando
-        if ($pass->count()) {
-          $userOwnerOld = $pass->first()->userReceiver()->first()->display_name;
-          // se pone al relator como receptor del pase sin recibir y se observa
-          $pass->received_at = date('Y-m-d H:i:s');
-          $pass->user_receiver_id = Auth::user()->id;
-          $pass->observation =  'Expediente reasignado de '.$userOwnerOld.' a '. Auth::user()->display_name;
-          dd($pass);
-          $pass->save();
-        }
+      if ($pass) {
+        $userOwnerOld = $pass->first()->userReceiver()->first()->display_name;
+        // se pone al relator como receptor del pase sin recibir y se observa
+        $pass->received_at = date('Y-m-d H:i:s');
+        $pass->user_receiver_id = Auth::user()->id;
+        $pass->observation =  'El usuario '.Auth::user()->display_name.' recibe el expte para poder reasignar';
+        $pass->update();
 
-        // se crea el nuevo pase
-        Pass::create([
-          'expedient_id' => $id,
-          'user_receiver_id' => request()->get('user_id'),
-          'user_sender_id' => Auth::user()->id,
-          'observation' => request()->get('observ')
-        ]);
-        return redirect()->route('expedients.index');
+        $expedient->user_owner_id = request()->get('user_id');
+        $expedient->update();
+        //dd($pass);
+      }
+      // se crea el nuevo pase
+      Pass::create([
+        'expedient_id' => $id,
+        'user_receiver_id' => request()->get('user_id'),
+        'user_sender_id' => Auth::user()->id,
+        'observation' => request()->get('observ')
+      ]);
+
+      return redirect()->route('expedients.index');
     }
 
     /**

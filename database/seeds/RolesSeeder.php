@@ -90,7 +90,9 @@ class RolesSeeder extends Seeder {
            * expedient's permissions
            */
           'expedient_list' => 'Listar Expedientes',
-          'expedient_create' => 'Crear un expediente',
+          'expedient_create' => 'Crear un expediente','expedient_ingress' => 'Ingresar un expediente',
+          'expedient_destroy' => 'Eliminar un expediente',
+          'expedient_assign' => 'Asignar expedientes',
           'expedient_edit' => 'Editar un expediente',
           'expedient_ingress' => 'Ingresar un expediente',
           'expedient_egress' => 'Dar Salida un expediente',
