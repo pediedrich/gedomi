@@ -17,7 +17,7 @@ class CreateNewsTable extends Migration
             $table->increments('id');
             $table->string('title');
             $table->string('text');
-            $table->boolean('public')->default('true');
+            $table->boolean('public')->default(true);
 
             //Expedients
             $table->unsignedInteger('expedient_id');
@@ -25,7 +25,7 @@ class CreateNewsTable extends Migration
 
             //Users
             $table->unsignedInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();
         });
