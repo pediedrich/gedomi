@@ -76,13 +76,22 @@
                     <ul class="dropdown-menu" role="menu">
                       <!-- menu en caso de coordinadores -->
                       @if(Auth::user()->hasRole('coordinador') || Auth::user()->hasRole('coordinador superior'))
-                        @permission('expedient_edit')
-                        <li><a href="{{ route('expedients.edit',array('id' => $expedient->id)) }}">Editar</a></li>
-                        @endpermission
-                        <!-- <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Reasignar</a></li> -->
-                        @permission('expedient_egress')
-                          <li><a href="{{ route('expedients.egress',array('id' => $expedient->id)) }}">Salida</a></li>
-                        @endpermission
+                        @if ($expedient->passes()->whereReceivedAt(null)->first())
+                          <li><a href="{{ route('expedients.receive',array('id' => $expedient->id)) }}">Recibir</a></li>
+                          <li><a href="{{ route('expedients.rechazar',array('id' => $expedient->id)) }}">Rechazar</a></li>
+                        @else
+                          @if(Auth::user()->can('expedient_show_admin') and $expedient->type()->first()->name == 'Administrativo')
+                            <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
+                            <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Pasar</a></li>
+                          @endif
+                          @permission('expedient_edit')
+                            <li><a href="{{ route('expedients.edit',array('id' => $expedient->id)) }}">Editar</a></li>
+                          @endpermission
+                          <!-- <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Reasignar</a></li> -->
+                          @permission('expedient_egress')
+                            <li><a href="{{ route('expedients.egress',array('id' => $expedient->id)) }}">Salida</a></li>
+                          @endpermission
+                        @endif
                       @endif
 
                       <!-- menu en caso del relator -->
@@ -90,10 +99,10 @@
                         <li><a href="{{ route('expedients.receive',array('id' => $expedient->id)) }}">Recibir</a></li>
                         <li><a href="{{ route('expedients.rechazar',array('id' => $expedient->id)) }}">Rechazar</a></li>
                       @else
-                        @permission('expedient_show')
+                        @if(Auth::user()->can('expedient_show') )
                           <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
-                        @endpermission
-                        <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Pasar</a></li>
+                          <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Pasar</a></li>
+                        @endif
                       @endif
                     </ul>
                 </div>

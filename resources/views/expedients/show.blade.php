@@ -55,7 +55,7 @@
 <!-- /.box -->
 
 
-@permission('files_upload')
+@permission(['files_upload','files_upload_admin'])
 <!-- Default box -->
 <div class="box box-pimary">
   <div class="box-header with-border">

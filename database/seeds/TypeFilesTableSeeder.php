@@ -27,5 +27,9 @@ class TypeFilesTableSeeder extends Seeder
         TypeFile::firstOrCreate([
           'name' => 'Medida Mejor Proveer'
         ]);
+
+        TypeFile::firstOrCreate([
+          'name' => 'Administrativo'
+        ]);
     }
 }

@@ -177,15 +177,36 @@ class ExpedientController extends Controller
     public function show($id)
     {
       // control sobre la funcion
-      if (!Auth::user()->can('expedient_show') ){
+      if (!Auth::user()->can(['expedient_show','expedient_show_admin'])){
         abort(403);
       }
+
       $expedient = Expedient::find($id);
       $typeFiles = TypeFile::pluck('name','id');
-      return view('expedients.show')
-        ->withExpedient($expedient)
-        ->withtypeFiles($typeFiles);
 
+      // la consutla es si es relator que pueda ver solo los Administrativos (esto es en caso de que quiera setear datos en la url)
+      if (Auth::user()->hasRole(['coordinador','coordinador_superior'])) {
+        if ($expedient->type()->first()->name === 'Administrativo') {
+          return view('expedients.show')
+                      ->withExpedient($expedient)
+                      ->withtypeFiles($typeFiles);
+        }
+        else {
+          flash::error('El Expediente al que intenta ingresar no es Administrativo.-');
+          return redirect('expedients');
+        }
+      }
+      else {
+        if ($expedient->type()->first()->name != 'Administrativo') {
+            return view('expedients.show')
+                      ->withExpedient($expedient)
+                      ->withtypeFiles($typeFiles);
+        }
+        else {
+          flash::error('El Expediente al que intenta ingresar es Administrativo, no tiene permisos.-');
+          return redirect('expedients');
+        }
+      }
     }
 
     /**
