@@ -55,9 +55,15 @@ Route::get('expedients/{id}/file/{file_id}', ['as' => 'expedients.file.download'
 Route::get('expedients/{expedient_id}/file/{file_id}/destroy', ['as' => 'expedients.file.destroy', 'uses' => 'ExpedientController@destroyFile']);
 
 /**
- * Rutas del Expediente
+ * Files
  */
 Route::resource('files','FileController');
+
+
+/**
+  * News
+  */
+Route::resource('news','NewController');  
 //
 Route::resource('users','UserController');
 //Auth::routes();

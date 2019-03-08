@@ -87,22 +87,21 @@
                           @permission('expedient_edit')
                             <li><a href="{{ route('expedients.edit',array('id' => $expedient->id)) }}">Editar</a></li>
                           @endpermission
-                          <!-- <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Reasignar</a></li> -->
                           @permission('expedient_egress')
                             <li><a href="{{ route('expedients.egress',array('id' => $expedient->id)) }}">Salida</a></li>
                           @endpermission
                         @endif
                       @endif
-
                       <!-- menu en caso del relator -->
                       @if ($expedient->passes()->whereReceivedAt(null)->first() && Auth::user()->hasRole('relator'))
                         <li><a href="{{ route('expedients.receive',array('id' => $expedient->id)) }}">Recibir</a></li>
                         <li><a href="{{ route('expedients.rechazar',array('id' => $expedient->id)) }}">Rechazar</a></li>
                       @else
-                        @if(Auth::user()->can('expedient_show') )
+                        @permission('expedient_show')
                           <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
                           <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Pasar</a></li>
-                        @endif
+                        @endpermission
+                          <li><a href="{{ route('news.index') }}">Novedades</a></li>
                       @endif
                     </ul>
                 </div>
