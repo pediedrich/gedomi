@@ -36,7 +36,7 @@
                   <h4 class="timeline-title">{{ $novelty->title }}</h4>
                 </div>
                 <div class="timeline-body">
-                  <p>{{ $novelty->text }}</p>
+                  <p>{!! $novelty->text !!}</p>
                   <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> {{ $novelty->created_at->format('d M Y H:m:s') }} - {{ $novelty->user()->first()->name }} </small></p>
                   <div class="btn-group pull-right">
                       {!! Form::open(array('url' => route('novelties.destroy', ['id' => $novelty->id]), 'onsubmit' => 'return confirmDelete()')) !!}

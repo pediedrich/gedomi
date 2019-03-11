@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Laracasts\Flash\Flash;
 use Auth;
 
 use App\Novelty;
@@ -135,6 +136,11 @@ class NoveltyController extends Controller
      */
     public function destroy($id)
     {
-        return $id;
+      $novelty = Novelty::findOrFail($id);
+      $expedient_id = $novelty->expedient_id;
+      $novelty->delete();
+
+      Flash::success('Eliminado correctamente');
+      return redirect()->route('expedient.novelties',array('id' => $expedient_id));
     }
 }
