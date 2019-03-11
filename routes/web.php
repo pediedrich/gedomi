@@ -54,6 +54,11 @@ Route::post('expedients/{id}/file', ['as' => 'expedient.file', 'uses' => 'Expedi
 Route::get('expedients/{id}/file/{file_id}', ['as' => 'expedients.file.download', 'uses' => 'ExpedientController@download']);
 Route::get('expedients/{expedient_id}/file/{file_id}/destroy', ['as' => 'expedients.file.destroy', 'uses' => 'ExpedientController@destroyFile']);
 
+Route::get('expedient/{id}/novelties',['as' => 'expedient.novelties','uses' => 'NoveltyController@index']);
+Route::get('expedient/{id}/novelty',['as' => 'expedient.novelty.create','uses' => 'NoveltyController@create']);
+Route::post('expedient/{id}/novelty',['as' => 'expedient.novelty.store','uses' => 'NoveltyController@store']);
+Route::get('expedient/novelty/{id}',['as' => 'expedient.novelty.edit','uses' => 'NoveltyController@edit']);
+Route::post('expedient/novelty/{id}',['as' => 'expedient.novelty.update','uses' => 'NoveltyController@update']);
 /**
  * Files
  */
@@ -63,7 +68,7 @@ Route::resource('files','FileController');
 /**
   * News
   */
-Route::resource('news','NewController');  
+Route::resource('novelties','NoveltyController');
 //
 Route::resource('users','UserController');
 //Auth::routes();

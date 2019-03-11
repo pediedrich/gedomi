@@ -35,4 +35,9 @@ class Expedient extends Model
       return $this->belongsTo('App\Type');
     }
 
+    public function novelties()
+    {
+      return $this->hasMany('App\Novelty');
+    }
+
 }

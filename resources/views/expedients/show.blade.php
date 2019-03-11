@@ -1,6 +1,60 @@
 @extends('main')
 
 @section('content')
+  @permission(['files_upload','files_upload_admin'])
+  <!-- Default box -->
+  <div class="box box-pimary">
+    <div class="box-header with-border">
+      <h3 class="box-title"> Subir Documentos </h3>
+    </div>
+    <div class="box-body">
+
+      <form method="POST" action="{{ route('expedient.file',['expedient_id'=>$expedient->id]) }}" accept-charset="UTF-8" enctype="multipart/form-data">
+        {{ csrf_field() }}
+
+        <div class="form-group{{ $errors->has('file') ? ' has-error' : '' }}">
+          <div class="col-md-4">
+            {{ Form::label('file', 'Archivo') }}
+            {{ Form::file('file', null, ['class' => 'form-control']) }}
+            {!! $errors->first('file', '<p class="help-block">:message</p>')  !!}
+          </div>
+        </div>
+
+        <div class="form-group{{ $errors->has('typeFile_id') ? ' has-error' : '' }}">
+          <div class="col-md-4">
+            {{ Form::label('typeFile_id', 'Tipo Documento') }}
+            {{ Form::select('typeFile_id', $typeFiles,null, ['class' => 'form-control']) }}
+            {!! $errors->first('typeFile_id', '<p class="help-block">:message</p>')  !!}
+          </div>
+        </div>
+
+        <div class="form-group{{ $errors->has('title_file') ? ' has-error' : '' }}">
+          <div class="col-md-4">
+            {{ Form::label('title_file', 'Titulo') }}
+            {{ Form::text('title_file', null, ['class' => 'form-control']) }}
+            {!! $errors->first('title_file', '<p class="help-block">:message</p>')  !!}
+          </div>
+        </div>
+
+        <div class="form-group{{ $errors->has('title_file') ? ' has-error' : '' }}">
+          <div class="col-md-12">
+            {!! Form::submit('Guardar Cambios',['class' => 'btn btn-success pull-right ']) !!}
+          </div>
+        </div>
+
+
+      </form>
+    </div>
+    <!-- /.box-body -->
+    <div class="box-footer">
+
+    </div>
+    <!-- /.box-footer-->
+  </div>
+  <!-- /.box -->
+  @endpermission
+
+  
 <!-- Default box -->
 <div class="box">
   <div class="box-header with-border">
@@ -55,56 +109,4 @@
 <!-- /.box -->
 
 
-@permission(['files_upload','files_upload_admin'])
-<!-- Default box -->
-<div class="box box-pimary">
-  <div class="box-header with-border">
-    <h3 class="box-title"> Subir Documentos </h3>
-  </div>
-  <div class="box-body">
-
-    <form method="POST" action="{{ route('expedient.file',['expedient_id'=>$expedient->id]) }}" accept-charset="UTF-8" enctype="multipart/form-data">
-        {{ csrf_field() }}
-
-        <div class="form-group{{ $errors->has('file') ? ' has-error' : '' }}">
-          <div class="col-md-4">
-            {{ Form::label('file', 'Archivo') }}
-            {{ Form::file('file', null, ['class' => 'form-control']) }}
-            {!! $errors->first('file', '<p class="help-block">:message</p>')  !!}
-          </div>
-        </div>
-
-        <div class="form-group{{ $errors->has('typeFile_id') ? ' has-error' : '' }}">
-          <div class="col-md-4">
-            {{ Form::label('typeFile_id', 'Tipo Documento') }}
-            {{ Form::select('typeFile_id', $typeFiles,null, ['class' => 'form-control']) }}
-            {!! $errors->first('typeFile_id', '<p class="help-block">:message</p>')  !!}
-          </div>
-        </div>
-
-        <div class="form-group{{ $errors->has('title_file') ? ' has-error' : '' }}">
-          <div class="col-md-4">
-            {{ Form::label('title_file', 'Titulo') }}
-            {{ Form::text('title_file', null, ['class' => 'form-control']) }}
-            {!! $errors->first('title_file', '<p class="help-block">:message</p>')  !!}
-          </div>
-        </div>
-
-        <div class="form-group{{ $errors->has('title_file') ? ' has-error' : '' }}">
-          <div class="col-md-12">
-            {!! Form::submit('Guardar Cambios',['class' => 'btn btn-success pull-right ']) !!}
-          </div>
-        </div>
-
-
-      </form>
-  </div>
-  <!-- /.box-body -->
-  <div class="box-footer">
-
-  </div>
-  <!-- /.box-footer-->
-</div>
-<!-- /.box -->
-@endpermission
 @endsection

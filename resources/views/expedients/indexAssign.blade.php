@@ -100,7 +100,13 @@
                         @permission('expedient_destroy')
                           <li><a href="{{ route('expedients.destroy',array('id' => $expedient->id)) }}">Eliminar</a></li>
                         @endpermission
+                        <li><a href="{{ route('expedient.novelties',array('id' => $expedient->id)) }}">Novedades</a></li>
+                        <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
                       @endif
+                      @role('ministro')
+                        <li><a href="{{ route('expedient.novelties',array('id' => $expedient->id)) }}">Novedades</a></li>
+                        <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
+                      @endrole
                     </ul>
                 </div>
                 <!--end actions-->
@@ -113,9 +119,9 @@
     {{-- {{ $expedients->links() }} --}}
   </div>
   <!-- /.box-body -->
-  <!-- <div class="box-footer">
+  <div class="box-footer">
 
-  </div> -->
+  </div>
   <!-- /.box-footer-->
 </div>
 <!-- /.box -->

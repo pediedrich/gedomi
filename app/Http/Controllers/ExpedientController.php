@@ -37,6 +37,9 @@ class ExpedientController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->hasRole('ministro')) {
+          return redirect()->route('expedients.assign.list');
+        }
       // permisos
         if( Auth::user()->can('expedient_list')){
           // traigo los exptedientes que le fueron asignados
@@ -62,7 +65,7 @@ class ExpedientController extends Controller
     public function indexAssign()
     {
       // Muestro los expedientes para dentro del sector y boton crear
-        if( Auth::user()->can('expedient_create')){
+        if( Auth::user()->can('expedient_create') || Auth::user()->hasRole('ministro')){
           //estado 3 = "Egreso" => expediente fuera de la dependencia
           $expedients = Expedient::WhereNotIn('state_id',[3])->get();
           return view('expedients.indexAssign')

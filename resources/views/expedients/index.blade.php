@@ -101,7 +101,7 @@
                           <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
                           <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Pasar</a></li>
                         @endpermission
-                          <li><a href="{{ route('news.index') }}">Novedades</a></li>
+                          <li><a href="{{ route('expedient.novelties',array('id' => $expedient->id)) }}">Novedades</a></li>
                       @endif
                     </ul>
                 </div>
