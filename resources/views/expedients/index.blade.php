@@ -98,6 +98,7 @@
                         <li><a href="{{ route('expedients.rechazar',array('id' => $expedient->id)) }}">Rechazar</a></li>
                       @else
                         @permission('expedient_show')
+                          <!-- <li><a href="{{ route('expedients.show',array('id' => \Crypt::encrypt($expedient->id))) }}">Entrar</a></li> -->
                           <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
                           <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Pasar</a></li>
                         @endpermission

@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+//use Illuminate\Support\Facades\Crypt;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Response;
 use Carbon\Carbon;
 use Illuminate\Support\Collection as Collection;
 use Auth;
+
 
 use App\Expedient;
 use App\File;
@@ -183,6 +185,7 @@ class ExpedientController extends Controller
       if (!Auth::user()->can(['expedient_show','expedient_show_admin'])){
         abort(403);
       }
+      //$id =  Crypt::decrypt($id);
 
       $expedient = Expedient::find($id);
       $typeFiles = TypeFile::pluck('name','id');
