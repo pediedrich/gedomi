@@ -1,5 +1,16 @@
 @extends('main')
 
+@section('title')
+  <div class="well well-sm panel panel-warning">
+    <small>
+      <strong>
+        {{ $expedient->number }}/{{ $expedient->year()->first()->number }}
+      </strong>
+      "{{ $expedient->title }}"
+     </small>
+  </div>
+@endsection
+
 @section('content')
 <div class="box">
   <div class="box-header with-border">

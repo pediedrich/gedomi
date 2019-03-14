@@ -24,7 +24,8 @@ class NoveltyController extends Controller
     public function index($id)
     {
       $expedient = Expedient::findOrFail($id);
-      $novelties = Novelty::orderBy('created_at','desc')->get();
+      $novelties = $expedient->novelties()->orderBy('created_at','desc')->get();
+
       return view('novelties.index',compact('novelties','expedient'));
     }
 
@@ -47,6 +48,7 @@ class NoveltyController extends Controller
      */
     public function store($id,Request $request)
     {
+      $expedient = Expedient::findOrFail($id);
       //valido los campos requeridos
       request()->validate([
         'title' => 'required|string',
@@ -68,7 +70,7 @@ class NoveltyController extends Controller
         'public' => $estado,
         'user_id' => Auth::user()->id,
       ]);
-      return redirect()->route('expedient.novelties',array('id' => $id));
+      return redirect()->route('expedient.novelties',array('id' => $id,'expedient'=>$expedient));
     }
 
     /**
