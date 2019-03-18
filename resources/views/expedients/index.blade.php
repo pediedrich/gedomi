@@ -80,8 +80,8 @@
                           <li><a href="{{ route('expedients.receive',array('id' => $expedient->id)) }}">Recibir</a></li>
                           <li><a href="{{ route('expedients.rechazar',array('id' => $expedient->id)) }}">Rechazar</a></li>
                         @else
-                          @if(Auth::user()->can('expedient_show_admin') and $expedient->type()->first()->name == 'Administrativo')
-                            <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
+                          <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
+                          @if(Auth::user()->can('expedient_show_admin'))
                             <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Pasar</a></li>
                           @endif
                           @permission('expedient_edit')
@@ -90,6 +90,7 @@
                           @permission('expedient_egress')
                             <li><a href="{{ route('expedients.egress',array('id' => $expedient->id)) }}">Salida</a></li>
                           @endpermission
+
                         @endif
                       @endif
                       <!-- menu en caso del relator -->
@@ -102,7 +103,10 @@
                           <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
                           <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Pasar</a></li>
                         @endpermission
+                        @if (!$expedient->passes()->whereReceivedAt(null)->first())
                           <li><a href="{{ route('expedient.novelties',array('id' => $expedient->id)) }}">Novedades</a></li>
+                          <li><a href="{{ route('expedient.movements',array('id' => $expedient->id)) }}">Movimientos</a></li>
+                        @endif
                       @endif
                     </ul>
                 </div>

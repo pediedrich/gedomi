@@ -10,21 +10,19 @@
 <div class="box">
   @include('flash::message')
   <div class="box-header with-border">
-    <h3 class="box-title">Listado Expedientes Externos</h3>
+    <h3 class="box-title">Listado Expedientes</h3>
   </div>
   <div class="box-body">
     @if (Session::has('flash_notification.message'))
-      <div class="alert alert-{{ Session::get('flash_notification.level') }}">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-          {{ Session::get('flash_notification.message') }}
-      </div>
+            <div class="alert alert-{{ Session::get('flash_notification.level') }}">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                {{ Session::get('flash_notification.message') }}
+            </div>
     @endif
     <table class="table" id="expedients-list">
       <thead class="thead-light">
         <tr>
           <th scope="col">Caratula</th>
-          <th scope="col">Fecha egreso</th>
-          <th scope="col">Observación</th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -32,26 +30,18 @@
         @foreach ($expedients as $key => $expedient)
           <tr>
             <td>
-              {{$expedient->number}}/{{$expedient->year->number}}
+              <b>{{$expedient->number}}/{{$expedient->year->number}} </b>
               "{{$expedient->title}}"
             </td>
             <td>
-              {{ $expedient->movements()->latest()->first()->created_at }}
-            </td>
-            <td>
-              {{ $expedient->movements()->latest()->first()->observation }}
-            </td>
-            <td>
-              <!--actions-->
-              <div class="btn-group pull-right">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Acciones <span class="caret"></span></button>
-                  <ul class="dropdown-menu" role="menu">
-                      @permission('expedient_ingress')
-                        <li><a href="{{ route('expedients.ingress.confirmed',array('id' => $expedient->id)) }}">Reingresar</a></li>
-                      @endpermission
-                  </ul>
-              </div>
-              <!--end actions-->
+                <!--actions-->
+                <div class="btn-group pull-right">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Acciones <span class="caret"></span></button>
+                    <ul class="dropdown-menu" role="menu">
+                      <li><a href="{{ route('expedients.show.readOnly',array('id' => $expedient->id)) }}">Cosultar</a></li>
+                    </ul>
+                </div>
+                <!--end actions-->
             </td>
           </tr>
         @endforeach
@@ -60,9 +50,9 @@
     {{-- {{ $expedients->links() }} --}}
   </div>
   <!-- /.box-body -->
-  <!-- <div class="box-footer">
+  <div class="box-footer">
 
-  </div> -->
+  </div>
   <!-- /.box-footer-->
 </div>
 <!-- /.box -->
