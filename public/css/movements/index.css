@@ -1,0 +1,9 @@
+#exTab1 .nav-pills > li > a {
+  border-radius: 4px 4px 0 0 ;
+}
+
+#exTab1 .tab-content {
+  color : white;
+  /*padding : 5px 15px;*/
+  border: 1px solid #3c8dbc;
+}

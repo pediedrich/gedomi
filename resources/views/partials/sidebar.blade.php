@@ -40,6 +40,9 @@
                 <a href="{{ route('expedients.index') }}"><i class="fa fa-circle-o"></i>Mis Expedientes</a>
               </li>
             @endability
+            <li {{ (Request::is('*expedients/search/list') ? 'class=active' : '') }}>
+              <a href="{{ route('expedients.search.list') }}"><i class="fa fa-circle-o"></i>Consulta</a>
+            </li>
           </ul>
       </li>
       @permission('user_list')

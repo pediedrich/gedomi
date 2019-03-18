@@ -73,9 +73,8 @@
         </tr>
       </thead>
       <tbody>
+        <tr>
         @foreach ($expedient->files as $file)
-
-          <tr>
             <td class="img img-responsive">
                 <img src="{{ asset('img/'.$file->extension.'.png') }}" height="25" width="25" alt="">
             </td>

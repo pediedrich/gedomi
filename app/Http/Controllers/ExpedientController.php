@@ -78,6 +78,14 @@ class ExpedientController extends Controller
         }
     }
 
+    public function indexSearch()
+    {
+      // Muestro los expedientes para dentro del sector y boton crear
+      $expedients = Expedient::all();
+      return view('expedients.indexSearch')
+                      ->withExpedients($expedients);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -192,15 +200,15 @@ class ExpedientController extends Controller
 
       // la consutla es si es relator que pueda ver solo los Administrativos (esto es en caso de que quiera setear datos en la url)
       if (Auth::user()->hasRole(['coordinador','coordinador_superior'])) {
-        if ($expedient->type()->first()->name === 'Administrativo') {
+        //if ($expedient->type()->first()->name === 'Administrativo') {
           return view('expedients.show')
                       ->withExpedient($expedient)
                       ->withtypeFiles($typeFiles);
-        }
-        else {
-          flash::error('El Expediente al que intenta ingresar no es Administrativo.-');
-          return redirect('expedients');
-        }
+        // }
+        // else {
+        //   flash::error('El Expediente al que intenta ingresar no es Administrativo.-');
+        //   return redirect('expedients');
+        // }
       }
       else {
         if ($expedient->type()->first()->name != 'Administrativo') {
@@ -213,6 +221,21 @@ class ExpedientController extends Controller
           return redirect('expedients');
         }
       }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function readOnly($id)
+    {
+      //$id =  Crypt::decrypt($id);
+
+      $expedient = Expedient::find($id);
+      return view('expedients.readOnly')
+                      ->withExpedient($expedient);
     }
 
     /**
@@ -396,24 +419,42 @@ class ExpedientController extends Controller
        return redirect()->route('expedients.index');
      }
 
+
+     /**
+      * Reingreso del expediente
+      * Muestro en pantalla todos los expedientes que le dieron salida
+      */
+      public function egress($id)
+      {
+          $expedient = Expedient::findOrFail($id);
+          return view('expedients.egress')->withExpedient($expedient);
+      }
+
     /**
      * Salida del expediente
      */
-     public function egress($id)
+     public function egressConfirmed($id)
      {
+
+       // validaciones
+       request()->validate([
+         'observation' => 'required|min:10',
+       ]);
+
        $expedient = Expedient::find($id);
        $expedient->state_id = 3;
-       $expedient->save();
+       $expedient->update();
 
        //guardo el movimiento y la observacion
        Movement::create([
          'action' => 'Salida de expediente',
          'expedient_id' => $id,
+         'observation' => request()->get('observation'),
          'user_id' => Auth()->user()->id,
        ]);
 
        Flash::success('Expediente egresado satisfactoriamente');
-       return redirect()->back();
+       return redirect()->route('expedients.index');
      }
 
     public function receive($id)

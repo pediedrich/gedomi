@@ -90,6 +90,7 @@
                     <ul class="dropdown-menu" role="menu">
                       <!-- menu en caso de coordinadores -->
                       @if(Auth::user()->hasRole('coordinador') || Auth::user()->hasRole('coordinador superior'))
+                        <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
                         @permission('expedient_edit')
                         <li><a href="{{ route('expedients.edit',array('id' => $expedient->id)) }}">Editar</a></li>
                         @endpermission
@@ -101,9 +102,10 @@
                           <li><a href="{{ route('expedients.destroy',array('id' => $expedient->id)) }}">Eliminar</a></li>
                         @endpermission
                         <li><a href="{{ route('expedient.novelties',array('id' => $expedient->id)) }}">Novedades</a></li>
-                        <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
+                        <li><a href="{{ route('expedient.movements',array('id' => $expedient->id)) }}">Movimientos</a></li>
                       @endif
                       @role('ministro')
+                        <li><a href="{{ route('expedient.movements',array('id' => $expedient->id)) }}">Movimientos</a></li>
                         <li><a href="{{ route('expedient.novelties',array('id' => $expedient->id)) }}">Novedades</a></li>
                         <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
                       @endrole
