@@ -234,8 +234,8 @@ class ExpedientController extends Controller
       //$id =  Crypt::decrypt($id);
 
       $expedient = Expedient::find($id);
-      return view('expedients.readOnly')
-                      ->withExpedient($expedient);
+      $c = 1;
+      return view('expedients.readOnly',compact('expedient','c'));
     }
 
     /**
