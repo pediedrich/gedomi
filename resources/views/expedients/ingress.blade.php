@@ -44,11 +44,22 @@
             <td>
               <!--actions-->
               <div class="btn-group pull-right">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Acciones <span class="caret"></span></button>
-                  <ul class="dropdown-menu" role="menu">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Acciones <span class="caret"></span></button>
+                  <ul class="dropdown-menu" role="menu" style="background-color:lightgrey">
                       @permission('expedient_ingress')
-                        <li><a href="{{ route('expedients.ingress.confirmed',array('id' => $expedient->id)) }}">Reingresar</a></li>
+                        <li><a href="{{ route('expedients.ingress.confirmed',array('id' => $expedient->id)) }}" class="text-black">Reingresar</a></li>
                       @endpermission
+                      @if(Auth::user()->can('expedient_destroy'))
+                      <li>
+                        {!! Form::open(array('route' => array('expedients.destroy', $expedient->id), 'method' => 'delete')) !!}
+                          <button onclick="
+                                  if (!confirm('Se va a eliminar permanentemente el usuario')) {
+                                      return false;
+                                  }
+                                  ;"  class="text-black btn btn-block" type="submit" >Eliminar</button>
+                        {!! Form::close() !!}
+                        </li>
+                      @endif
                   </ul>
               </div>
               <!--end actions-->
