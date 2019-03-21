@@ -130,7 +130,7 @@ class ExpedientController extends Controller
       // validaciones
       request()->validate([
         'title' => 'required|string|min:10',
-        'number' => 'required|numeric',
+        'number' => 'required',
       ]);
 
       $state_id = State::where('name','=','Creado')->first()->id;
@@ -198,7 +198,7 @@ class ExpedientController extends Controller
       $expedient = Expedient::find($id);
       $typeFiles = TypeFile::pluck('name','id');
 
-      // la consutla es si es relator que pueda ver solo los Administrativos (esto es en caso de que quiera setear datos en la url)
+      // la consutla es si el coordinador o superio pueda ver solo los Administrativos (esto es en caso de que quiera setear datos en la url)
       if (Auth::user()->hasRole(['coordinador','coordinador_superior'])) {
         //if ($expedient->type()->first()->name === 'Administrativo') {
           return view('expedients.show')
@@ -250,6 +250,7 @@ class ExpedientController extends Controller
       if (!Auth::user()->can('expedient_edit') ){
         abort(403);
       }
+
       $years = Year::pluck('number','id');
       $expedient = Expedient::find($id);
       return view('expedients.edit')
@@ -270,14 +271,35 @@ class ExpedientController extends Controller
       if (!Auth::user()->can('expedient_edit') ){
         abort(403);
       }
-      $expedient = Expedient::find($id);
-      $expedient->title = $request->input('title');
-      $expedient->number = $request->input('number');
-      $expedient->year_id = $request->input('year_id');
-      $expedient->user_create_id = Auth::user()->id;
-      $expedient->save();
+      // validaciones
+      request()->validate([
+        'title' => 'required|string|min:10',
+        'number' => 'required',
+      ]);
 
-      return redirect()->route('expedients.index');
+      // si pasa la validacion creo el expte
+      try {
+
+        DB::beginTransaction();
+
+          $expedient = Expedient::find($id);
+          $expedient->title = $request->input('title');
+          $expedient->number = $request->input('number');
+          $expedient->year_id = $request->input('year_id');
+          $expedient->user_create_id = Auth::user()->id;
+          $expedient->save();
+
+        DB::commit();
+        flash::success('Se modificó satisfactoriamente el expediente.-');
+        return redirect()->route('expedients.index');
+
+      } catch (\Exception $e) {
+
+        DB::rollback();
+
+        flash::error('Fallo la modificación del expediente.-');
+        return redirect('expedients');
+      }
     }
 
     /**
@@ -292,8 +314,13 @@ class ExpedientController extends Controller
       if (!Auth::user()->can('expedient_destroy') ){
         abort(403);
       }
+      $expte = Expedient::find($id);
+      $expte->movements()->delete();
+      $expte->files()->delete();
+      $expte->passes()->delete();
+      $expte->novelties()->delete();
+      $expte->delete();
 
-      Expedient::delete($id);
 
       Flash::success('expediente eliminado correctamente');
       return redirect()->back();
