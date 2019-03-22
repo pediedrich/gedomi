@@ -5,9 +5,13 @@
 <div class="box">
   <div class="box-header with-border">
     <h3 class="box-title">Editar Expediente</h3>
-    <!-- <div class="box-tools pull-right">
-      <a href="{{ route('expedients.create') }}" class="btn btn-primary">+<span class="hidden-xs">Expte Nuevo</span></a>
-    </div> -->
+    {!! Form::open(array('route' => array('expedients.destroy', $expedient->id), 'method' => 'delete')) !!}
+    <button onclick="
+            if (!confirm('Se va a eliminar permanentemente el usuario')) {
+                return false;
+            }
+            ;" class="btn btn-danger pull-right" type="submit" >Eliminar Expediente</button>
+    {!! Form::close() !!}
   </div>
   <div class="box-body">
     <form class="form-horizontal" method="POST" action="{{ route('expedients.update',['id' => $expedient->id]) }}">

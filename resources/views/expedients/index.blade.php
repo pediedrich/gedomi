@@ -26,7 +26,7 @@
                 {{ Session::get('flash_notification.message') }}
             </div>
     @endif
-    <table class="table" id="expedients-list">
+    <table class="table table-striped" id="expedients-list">
       <thead class="thead-light">
         <tr>
           <th scope="col">Caratula</th>
@@ -72,40 +72,40 @@
             <td>
                 <!--actions-->
                 <div class="btn-group pull-right">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Acciones <span class="caret"></span></button>
-                    <ul class="dropdown-menu" role="menu">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Acciones <span class="caret"></span></button>
+                    <ul class="dropdown-menu" role="menu" style="background-color:lightgrey">
                       <!-- menu en caso de coordinadores -->
                       @if(Auth::user()->hasRole('coordinador') || Auth::user()->hasRole('coordinador superior'))
                         @if ($expedient->passes()->whereReceivedAt(null)->first())
-                          <li><a href="{{ route('expedients.receive',array('id' => $expedient->id)) }}">Recibir</a></li>
-                          <li><a href="{{ route('expedients.rechazar',array('id' => $expedient->id)) }}">Rechazar</a></li>
+                          <li><a href="{{ route('expedients.receive',array('id' => $expedient->id)) }}" class="text-black">Recibir</a></li>
+                          <li><a href="{{ route('expedients.rechazar',array('id' => $expedient->id)) }}" class="text-black">Rechazar</a></li>
                         @else
-                          <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
+                          <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}" class="text-black">Entrar</a></li>
                           @if(Auth::user()->can('expedient_show_admin'))
-                            <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Pasar</a></li>
+                            <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}" class="text-black">Pasar</a></li>
                           @endif
                           @permission('expedient_edit')
-                            <li><a href="{{ route('expedients.edit',array('id' => $expedient->id)) }}">Editar</a></li>
+                            <li><a href="{{ route('expedients.edit',array('id' => $expedient->id)) }}" class="text-black">Editar</a></li>
                           @endpermission
                           @permission('expedient_egress')
-                            <li><a href="{{ route('expedients.egress',array('id' => $expedient->id)) }}">Salida</a></li>
+                            <li><a href="{{ route('expedients.egress',array('id' => $expedient->id)) }}" class="text-black">Salida</a></li>
                           @endpermission
 
                         @endif
                       @endif
                       <!-- menu en caso del relator -->
                       @if ($expedient->passes()->whereReceivedAt(null)->first() && Auth::user()->hasRole('relator'))
-                        <li><a href="{{ route('expedients.receive',array('id' => $expedient->id)) }}">Recibir</a></li>
-                        <li><a href="{{ route('expedients.rechazar',array('id' => $expedient->id)) }}">Rechazar</a></li>
+                        <li><a href="{{ route('expedients.receive',array('id' => $expedient->id)) }}" class="text-black">Recibir</a></li>
+                        <li><a href="{{ route('expedients.rechazar',array('id' => $expedient->id)) }}" class="text-black">Rechazar</a></li>
                       @else
                         @permission('expedient_show')
                           <!-- <li><a href="{{ route('expedients.show',array('id' => \Crypt::encrypt($expedient->id))) }}">Entrar</a></li> -->
-                          <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
-                          <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}">Pasar</a></li>
+                          <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}" class="text-black">Entrar</a></li>
+                          <li><a href="{{ route('expedients.pass',array('id' => $expedient->id)) }}" class="text-black">Pasar</a></li>
                         @endpermission
                         @if (!$expedient->passes()->whereReceivedAt(null)->first())
-                          <li><a href="{{ route('expedient.novelties',array('id' => $expedient->id)) }}">Novedades</a></li>
-                          <li><a href="{{ route('expedient.movements',array('id' => $expedient->id)) }}">Movimientos</a></li>
+                          <li><a href="{{ route('expedient.novelties',array('id' => $expedient->id)) }}" class="text-black">Novedades</a></li>
+                          <li><a href="{{ route('expedient.movements',array('id' => $expedient->id)) }}" class="text-black">Movimientos</a></li>
                         @endif
                       @endif
                     </ul>

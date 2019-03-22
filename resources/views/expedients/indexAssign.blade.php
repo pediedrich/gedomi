@@ -86,28 +86,38 @@
             <td>
                 <!--actions-->
                 <div class="btn-group pull-right">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Acciones <span class="caret"></span></button>
-                    <ul class="dropdown-menu" role="menu">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Acciones <span class="caret"></span></button>
+                    <ul class="dropdown-menu" role="menu" style="background-color:lightgrey">
                       <!-- menu en caso de coordinadores -->
                       @if(Auth::user()->hasRole('coordinador') || Auth::user()->hasRole('coordinador superior'))
-                        <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
+                        <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}" class="text-black">Entrar</a></li>
                         @permission('expedient_edit')
-                        <li><a href="{{ route('expedients.edit',array('id' => $expedient->id)) }}">Editar</a></li>
+                        <li><a href="{{ route('expedients.edit',array('id' => $expedient->id)) }}" class="text-black">Editar</a></li>
                         @endpermission
-                        <li><a href="{{ route('expedients.reassignPass',array('id' => $expedient->id)) }}">Reasignar</a></li>
+                        <li><a href="{{ route('expedients.reassignPass',array('id' => $expedient->id)) }}" class="text-black">Reasignar</a></li>
                         @permission('expedient_egress')
-                          <li><a href="{{ route('expedients.egress',array('id' => $expedient->id)) }}">Salida</a></li>
+                          <li><a href="{{ route('expedients.egress',array('id' => $expedient->id)) }}" class="text-black">Salida</a></li>
                         @endpermission
                         @permission('expedient_destroy')
-                          <li><a href="{{ route('expedients.destroy',array('id' => $expedient->id)) }}">Eliminar</a></li>
+                        <li>
+                          {!! Form::open(array('route' => array('expedients.destroy', $expedient->id), 'method' => 'delete')) !!}
+                            <button onclick="if (!confirm('Se va a eliminar permanentemente el Expediente'))
+                                              {
+                                                return false;
+                                              };"
+                                    class="text-black btn btn-block" type="submit" >
+                                    Eliminar
+                            </button>
+                          {!! Form::close() !!}
+                          </li>
                         @endpermission
-                        <li><a href="{{ route('expedient.novelties',array('id' => $expedient->id)) }}">Novedades</a></li>
-                        <li><a href="{{ route('expedient.movements',array('id' => $expedient->id)) }}">Movimientos</a></li>
+                        <li><a href="{{ route('expedient.novelties',array('id' => $expedient->id)) }}" class="text-black">Novedades</a></li>
+                        <li><a href="{{ route('expedient.movements',array('id' => $expedient->id)) }}" class="text-black">Movimientos</a></li>
                       @endif
                       @role('ministro')
-                        <li><a href="{{ route('expedient.movements',array('id' => $expedient->id)) }}">Movimientos</a></li>
-                        <li><a href="{{ route('expedient.novelties',array('id' => $expedient->id)) }}">Novedades</a></li>
-                        <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}">Entrar</a></li>
+                        <li><a href="{{ route('expedient.movements',array('id' => $expedient->id)) }}" class="text-black">Movimientos</a></li>
+                        <li><a href="{{ route('expedient.novelties',array('id' => $expedient->id)) }}" class="text-black">Novedades</a></li>
+                        <li><a href="{{ route('expedients.show',array('id' => $expedient->id)) }}" class="text-black">Entrar</a></li>
                       @endrole
                     </ul>
                 </div>
