@@ -40,4 +40,8 @@ class Expedient extends Model
       return $this->hasMany('App\Novelty');
     }
 
+    public function userOwner(){
+      return $this->hasOne('App\User','id','user_owner_id');
+    }
+
 }

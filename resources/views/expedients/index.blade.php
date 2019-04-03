@@ -32,9 +32,9 @@
           <th scope="col">Caratula</th>
           <th scope="col">Numero</th>
           <th scope="col">Documentos</th>
-          <!-- @if(!Auth::user()->hasRole('relator'))
-            <th scope="col">Pasado a</th>
-          @endif -->
+          @role(['coordinador','ministro'])
+            <th scope="col">Recibido de</th>
+          @endrole
           <th scope="col">Observación</th>
           <th scope="col">Recibido</th>
           <th scope="col"></th>
@@ -52,7 +52,15 @@
             <td>
               {{$expedient->files()->count() }}
             </td>
-
+            @role(['coordinador','ministro'])
+              <td>
+                @if ($expedient->passes()->whereReceivedAt(null)->first())
+                  {{ $expedient->passes()->whereReceivedAt(null)->first()->userSender()->first()->display_name }}
+                @else
+                  {{ $expedient->passes()->get()->last()->userSender()->first()->display_name }}
+                @endif
+              </td>
+            @endrole
             <td>
               @if ($expedient->passes()->count() && $expedient->passes()->whereReceivedAt(null)->first())
                 {{ $expedient->passes()->whereReceivedAt(null)->first()->observation }}

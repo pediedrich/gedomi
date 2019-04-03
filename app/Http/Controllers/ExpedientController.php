@@ -45,7 +45,7 @@ class ExpedientController extends Controller
       // permisos
         if( Auth::user()->can('expedient_list')){
           // traigo los exptedientes que le fueron asignados
-         $expedients = Expedient::whereUserOwnerId(Auth::user()->id)->whereNotIn('state_id',[3])->get();
+         $expedients = Expedient::whereUserOwnerId(Auth::user()->id)->whereNotIn('state_id',[3])->orderBy('updated_at')->get();
           // traigo los exptes que le fueron pasados
           // $expedients = Expedient::join("pass","expedients.id","=","pass.expedient_id")
           //               ->where('pass.user_receiver_id','=',Auth::user()->id)
@@ -421,7 +421,9 @@ class ExpedientController extends Controller
      public function ingressConfirmed($id)
      {
        $expedient = Expedient::find($id);
+       $users = User::whereNotIn('id',[1])->pluck('display_name','id');
        return view('expedients.ingressConfirmed')
+                        ->withUsers($users)
                         ->withExpedient($expedient);
      }
 
@@ -432,6 +434,7 @@ class ExpedientController extends Controller
      {
        $state_id = State::where('name','=','Ingreso')->first()->id;
        $expedient = Expedient::find($id);
+       $expedient->user_owner_id = request()->get('user_id');
        $expedient->state_id = $state_id;
        $expedient->save();
 

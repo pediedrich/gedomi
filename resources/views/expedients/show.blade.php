@@ -36,7 +36,7 @@
           </div>
         </div>
 
-        <div class="form-group{{ $errors->has('title_file') ? ' has-error' : '' }}">
+        <div class="form-group">
           <div class="col-md-12">
             {!! Form::submit('Guardar Cambios',['class' => 'btn btn-success pull-right ']) !!}
           </div>

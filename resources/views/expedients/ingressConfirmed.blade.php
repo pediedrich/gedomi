@@ -19,7 +19,14 @@
         </div>
 
         <div class="form-group">
-          &nbsp;
+          <div class="col-md-6">
+            <label class="control-label">Personal:</label>
+            <select class="form-control" name="user_id">
+              @foreach ($users as $key => $value)
+                <option value="{{$key}}">{{$value}}</option>
+              @endforeach
+            </select>
+          </div>
         </div>
 
         <div class="form-group">
