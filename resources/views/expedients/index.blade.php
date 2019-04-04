@@ -32,7 +32,7 @@
           <th scope="col">Caratula</th>
           <th scope="col">Numero</th>
           <th scope="col">Documentos</th>
-          @role(['coordinador','ministro'])
+          @role(['coordinador superior','ministro'])
             <th scope="col">Recibido de</th>
           @endrole
           <th scope="col">Observación</th>
