@@ -85,6 +85,7 @@ class UserController extends Controller
               $user->name = $request->get('name');
               $user->display_name = $request->get('display_name');
               $user->password = bcrypt($request->get('name'));
+              $user->email = $request->get('name').'@sistema.com.ar';
               $user->save();
 
               $user->roles()->detach();
