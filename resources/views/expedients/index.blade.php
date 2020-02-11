@@ -31,7 +31,8 @@
         <tr>
           <th scope="col">Caratula</th>
           <th scope="col">Numero</th>
-          <th scope="col">Documentos</th>
+          <th scope="col">Docs</th>
+          <th scope="col">Fecha</th>
           @role(['coordinador superior','ministro'])
             <th scope="col">Recibido de</th>
           @endrole
@@ -51,6 +52,9 @@
             </td>
             <td>
               {{$expedient->files()->count() }}
+            </td>
+            <td>
+              {{$expedient->created_at->format('d/m/Y H:m:s') }}
             </td>
             @role(['coordinador','ministro'])
               <td>
