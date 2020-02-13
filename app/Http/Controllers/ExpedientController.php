@@ -11,8 +11,6 @@ use Illuminate\Http\Response;
 use Carbon\Carbon;
 use Illuminate\Support\Collection as Collection;
 use Auth;
-
-
 use App\Expedient;
 use App\File;
 use App\TypeFile;
@@ -45,13 +43,14 @@ class ExpedientController extends Controller
       // permisos
         if( Auth::user()->can('expedient_list')){
           // traigo los exptedientes que le fueron asignados
-         $expedients = Expedient::whereUserOwnerId(Auth::user()->id)->whereNotIn('state_id',[3])->orderBy('updated_at')->get();
+         $expedients = Expedient::whereUserOwnerId(Auth::user()->id)
+                                ->whereNotIn('state_id',[3])
+                                ->get();
           // traigo los exptes que le fueron pasados
           // $expedients = Expedient::join("pass","expedients.id","=","pass.expedient_id")
           //               ->where('pass.user_receiver_id','=',Auth::user()->id)
           //               ->get();
-
-                        // dd($expedients[0]->passes()->get());
+          // dd($expedients[0]->passes()->get());
 
           //creo la variable $create para ocupar la misma vista en el caso de asignar y no mostrar el boton de crear exptes
           $create = false;
@@ -251,11 +250,13 @@ class ExpedientController extends Controller
         abort(403);
       }
 
-      $years = Year::pluck('number','id');
       $expedient = Expedient::find($id);
+
       return view('expedients.edit')
         ->withExpedient($expedient)
-        ->withYears($years);
+        ->withYears(Year::pluck('number','id'))
+        ->withTypes(Type::pluck('name','id'));
+
     }
 
     /**
@@ -286,6 +287,7 @@ class ExpedientController extends Controller
           $expedient->title = $request->input('title');
           $expedient->number = $request->input('number');
           $expedient->year_id = $request->input('year_id');
+          $expedient->type_id = $request->input('type_id');
           $expedient->user_create_id = Auth::user()->id;
           $expedient->save();
 

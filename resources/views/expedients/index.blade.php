@@ -26,7 +26,7 @@
                 {{ Session::get('flash_notification.message') }}
             </div>
     @endif
-    <table class="table table-striped" id="expedients-list">
+    <table class="table table-striped" id="listado-exptes">
       <thead class="thead-light">
         <tr>
           <th scope="col">Caratula</th>
@@ -54,9 +54,9 @@
               {{$expedient->files()->count() }}
             </td>
             <td>
-              {{$expedient->created_at->format('d/m/Y H:m:s') }}
+              {{ $expedient->created_at->format('Y/m/d') }}
             </td>
-            @role(['coordinador','ministro'])
+            @role(['coordinador superior','ministro'])
               <td>
                 @if ($expedient->passes()->whereReceivedAt(null)->first())
                   {{ $expedient->passes()->whereReceivedAt(null)->first()->userSender()->first()->display_name }}
@@ -147,11 +147,10 @@
 
   <script>
   $(function () {
-
-    $('#expedients-list').DataTable({
-
-    })
-  })
+    $('#listado-exptes').DataTable({
+      "order":[[3,"ASC"]]
+    });
+  });
 </script>
 @endsection
 

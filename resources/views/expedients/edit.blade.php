@@ -43,6 +43,21 @@
           </select>
         </div>
       </div>
+      
+      <div class="form-group">
+        <label class="control-label col-sm-2">Tipo Expte:</label>
+        <div class="col-sm-6">
+          <select class="form-control" name="type_id">
+            @foreach ($types as $key => $value)
+              @if($key == $expedient->type_id)
+                <option value="{{$key}}" selected="{{$expedient->type_id}}">{{$value}}</option>
+              @else
+                <option value="{{$key}}">{{$value}}</option>
+              @endif
+            @endforeach
+          </select>
+        </div>
+      </div>
 
       <!-- personal que tramita la causa -->
       <!-- <div class="form-group">
